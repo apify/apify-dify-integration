@@ -128,7 +128,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+apify-integration/.env
 .venv
 env/
 venv/
