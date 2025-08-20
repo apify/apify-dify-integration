@@ -1,0 +1,44 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint (flake8)
+        run: flake8 .
+
+      - name: Install Dify Plugin CLI (linux amd64)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          url=$(curl -s https://api.github.com/repos/langgenius/dify-plugin-daemon/releases/latest \
+            | jq -r '.assets[] | select(.name | test("linux-amd64$")) | .browser_download_url')
+          curl -L "$url" -o dify
+          chmod +x dify
+          sudo mv dify /usr/local/bin/dify
+          dify version
+
+      - name: Validate packaging
+        run: dify plugin package . -o apify.difypkg
