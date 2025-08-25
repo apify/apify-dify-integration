@@ -21,6 +21,7 @@ credentials_for_provider:
 tools:
     - tools/run_actor.yaml
     - tools/run_task.yaml
+    - tools/scrape_single_url.yaml
 extra:
   python:
     source: provider/apify.py

@@ -18,14 +18,14 @@ parameters:
       en_US: The unique ID of the actor task you want to run.
     llm_description: The unique identifier for the Apify actor task. This can be found in the Apify Console.
   - name: input_override
-    type: string # Dify treats JSON input as a string; the Python code will parse it.
+    type: string
     required: false
     form: llm
     label:
       en_US: Input Override
     human_description:
       en_US: Optional. A JSON object to override the task&#39;s default input.
-    llm_description: Optional. A JSON formatted string that will be merged with the task&#39;s default input. Any fields provided here will override the corresponding fields in the task&#39;s pre-configured input.
+    llm_description: Optional. A JSON formatted string that will be merged with the task&#39;s default input. Any fields provided here will override the corresponding fields in the task's pre-configured input.
   - name: build
     type: string
     required: false
@@ -33,8 +33,8 @@ parameters:
     label:
       en_US: Build
     human_description:
-      en_US: The build tag or number to run (e.g., &quot;latest&quot; or &quot;1.2.3&quot;).
-    llm_description: Optional. A specific build tag or number for the actor (e.g., &quot;latest&quot;, &quot;beta&quot;, &quot;1.2.3&quot;). Overrides the task&#39;s default build.
+      en_US: The build tag or number to run (e.g., "latest" or "1.2.3").
+    llm_description: Optional. A specific build tag or number for the actor (e.g., "latest", "beta", "1.2.3"). Overrides the task's default build.
   - name: wait_for_finish
     type: boolean
     required: false
