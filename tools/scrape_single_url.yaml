@@ -1,0 +1,59 @@
+identity:
+  name: scrape_single_url
+  author: 'Apify'
+  label:
+    en_US: Scrape Single URL
+description:
+  human:
+    en_US: Scrapes a single web page and returns its content. Can run synchronously to return results directly, or asynchronously to return run details.
+  llm: |
+    This tool scrapes a single web page using the Apify Website Content Crawler. It requires a URL. The `wait_for_finish` parameter is critical: if `true` (the default), it waits for the scrape to complete and returns an array of the scraped data items. If `false`, it starts the scrape and immediately returns a JSON object with the actor run's details.
+parameters:
+  - name: url
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: URL to scrape
+    human_description:
+      en_US: The full URL of the single page to be scraped.
+    llm_description: The complete and valid URL of the web page to be scraped.
+  - name: crawler_type
+    type: select
+    required: true
+    form: llm
+    label:
+      en_US: Crawler type
+    human_description:
+      en_US: The crawling engine to use for the scrape.
+    llm_description: The type of crawler to use. Adaptive is a good default.
+    default: playwright:adaptive
+    options:
+      - value: playwright:adaptive
+        label:
+          en_US: Adaptive
+      - value: playwright:firefox
+        label:
+          en_US: Firefox (Headless Browser)
+      - value: cheerio
+        label:
+          en_US: Cheerio (Raw HTTP)
+      - value: jsdom
+        label:
+          en_US: JSDOM (Raw HTTP with JS)
+      - value: playwright:chrome
+        label:
+          en_US: Chrome (Headless Browser) [DEPRECATED]
+  - name: wait_for_finish
+    type: boolean
+    required: false
+    form: llm
+    label:
+      en_US: Wait for Finish
+    human_description:
+      en_US: If checked, wait for the scrape to finish and return results. If unchecked, start the scrape and return immediately.
+    llm_description: A boolean (`true` or `false`). If `true` (default), the tool waits for the scrape to complete and returns the dataset items. If `false`, it returns the initial run object immediately.
+    default: true
+extra:
+  python:
+    source: tools/scrape_single_url.py

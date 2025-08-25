@@ -57,7 +57,6 @@ class RunActor(Tool):
             else:
                 # Asynchronous Execution
                 run_details = actor_client.start(run_input=run_input, **filtered_options)
-            print(run_details)
             yield self.create_json_message(run_details)
 
         except ApifyApiError as e:
