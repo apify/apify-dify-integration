@@ -19,7 +19,7 @@ resource:
   permission: {}
 plugins:
   tools:
-    - provider/apify-integration.yaml
+    - provider/apify.yaml
 meta:
   version: 0.0.1
   arch:
