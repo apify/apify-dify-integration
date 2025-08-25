@@ -20,6 +20,7 @@ credentials_for_provider:
     url: 'https://console.apify.com/account/integrations'
 tools:
     - tools/run_actor.yaml
+    - tools/run_task.yaml
 extra:
   python:
     source: provider/apify.py

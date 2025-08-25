@@ -1,6 +1,6 @@
 identity:
   name: run_actor
-  author: 'your-name'
+  author: 'Apify'
   label:
     en_US: Run Actor
 description:
