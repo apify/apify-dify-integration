@@ -94,6 +94,8 @@ To enable interactive debugging, follow these steps:
    - Go to the [Dify Plugins](https://cloud.dify.ai/plugins) page.  
    - Click the **bug icon** in the upper right corner to generate a debugging key.  
    - Replace the default value of `REMOTE_INSTALL_KEY` in your `.env` file with this key.
+  
+     <img width="266" height="223" alt="image" src="https://github.com/user-attachments/assets/e592712d-a741-45c7-96ef-66231e201262" />
 
 3. **Run the project**  
    Start the project in debug mode with:  
@@ -107,9 +109,15 @@ This section shows how to run an Apify actor inside a Dify workflow.
 We will use the **Google Maps Extractor** actor (`2Mdma1N6Fd0y3QEjR`) as an example.
 
 ### Step 1: Create a New Workflow
-1. Open your **Dify project**.  
+1. Open your **Dify project**.
 2. Create a new **Workflow** from Blank.
-3. Drag and drop the **Run Actor (Apify Plugin)** block onto the canvas.
+
+<img width="978" height="435" alt="image" src="https://github.com/user-attachments/assets/d913230f-11bf-42e3-a68a-bb80a549daf3" />
+<img width="704" height="546" alt="image" src="https://github.com/user-attachments/assets/ffcd6bf6-4831-48b7-a630-2ce38c57803f" />
+
+4. Drag and drop the **Run Actor (Apify Plugin)** block onto the canvas.
+
+<img width="891" height="469" alt="image" src="https://github.com/user-attachments/assets/a8b0c545-5e2f-4845-ab72-36f230134906" />
 
 ### Step 2: Configure the Run Actor Block
 1. Select the **Run Actor** block.  
@@ -136,12 +144,19 @@ We will use the **Google Maps Extractor** actor (`2Mdma1N6Fd0y3QEjR`) as an exam
    - **Wait for Finish**:  
    Set to `false` (the workflow will return immediately without waiting for the actor to complete).  
 
+<img width="1288" height="710" alt="image" src="https://github.com/user-attachments/assets/585f6eec-d06d-4e65-8da4-334abfa2eff7" />
+
 ### Step 3: Connect Workflow Blocks
-1. Put **End** block in a workflow. 
+1. Put **End** block in a workflow.
+
+<img width="1013" height="229" alt="image" src="https://github.com/user-attachments/assets/ad0cf992-50ae-4ffb-953e-d16edf445a56" />
+
 2. Connect the **Run Actor** block to the **End** block.  
 3. Create a variable to store results:  
    - Open the output of the **End** block.  
    - Add a variable, e.g., `result`, that maps to the actor’s response.  
+
+<img width="931" height="401" alt="image" src="https://github.com/user-attachments/assets/c6ca7068-d980-4f92-8d38-e1374f008eac" />
 
 ### Step 4: Run the Workflow
 1. Click the **Run** button.  
