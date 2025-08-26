@@ -1,0 +1,40 @@
+identity:
+  name: get_dataset_items
+  author: 'Apify'
+  label:
+    en_US: Get Dataset Items
+description:
+  human:
+    en_US: Retrieves items from a specified Apify dataset. Supports pagination with limit and offset.
+  llm: This tool fetches items from an Apify dataset. It requires a `datasetId`. Optional `limit` and `offset` parameters can be used for pagination. The tool returns an array of JSON objects, where each object is an item from the dataset.
+parameters:
+  - name: datasetId
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Dataset ID
+    human_description:
+      en_US: The unique ID of the dataset. You can find this in the Apify Console.
+    llm_description: The unique identifier for the Apify dataset from which to fetch items.
+  - name: limit
+    type: number
+    required: false
+    form: llm
+    label:
+      en_US: Limit
+    human_description:
+      en_US: The number of items to retrieve.
+    llm_description: Optional. The maximum number of items to return.
+  - name: offset
+    type: number
+    required: false
+    form: llm
+    label:
+      en_US: Offset
+    human_description:
+      en_US: The number of items to skip from the beginning.
+    llm_description: Optional. The number of items to skip from the start of the dataset. Used for pagination.
+extra:
+  python:
+    source: tools/get_dataset_items.py

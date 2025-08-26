@@ -22,6 +22,7 @@ tools:
     - tools/run_actor.yaml
     - tools/run_task.yaml
     - tools/scrape_single_url.yaml
+    - tools/get_dataset_items.yaml
 extra:
   python:
     source: provider/apify.py
