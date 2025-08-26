@@ -23,6 +23,7 @@ tools:
     - tools/run_task.yaml
     - tools/scrape_single_url.yaml
     - tools/get_dataset_items.yaml
+    - tools/key_value_store.yaml
 extra:
   python:
     source: provider/apify.py
