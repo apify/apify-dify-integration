@@ -1,0 +1,9 @@
+settings:
+  - name: app_selector
+    type: app-selector
+    required: true
+    label:
+      en_US: App
+
+endpoints:
+  - endpoints/apify_webhook.yaml
