@@ -57,7 +57,10 @@ class RunActor(Tool):
             else:
                 # Asynchronous Execution
                 run_details = actor_client.start(run_input=run_input, **filtered_options)
-            yield self.create_json_message(run_details)
+
+            output_data = {"result": run_details}
+
+            yield self.create_json_message(output_data)
 
         except ApifyApiError as e:
             error_message = f"An Apify API error occurred: {e.message or str(e)}"
