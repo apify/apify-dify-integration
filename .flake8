@@ -1,0 +1,32 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203, W503
+exclude =
+    .bzr,
+    .direnv,
+    .eggs,
+    .git,
+    .git-rewrite,
+    .hg,
+    .ipynb_checkpoints,
+    .mypy_cache,
+    .nox,
+    .pants.d,
+    .pyenv,
+    .pytest_cache,
+    .pytype,
+    .ruff_cache,
+    .svn,
+    .tox,
+    .venv,
+    .vscode,
+    __pypackages__,
+    _build,
+    buck-out,
+    build,
+    dist,
+    node_modules,
+    site-packages,
+    venv
+per-file-ignores =
+    __init__.py:F401

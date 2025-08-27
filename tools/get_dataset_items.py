@@ -1,37 +1,35 @@
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 
 from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
-
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
 
 class GetDatasetItems(Tool):
     def _invoke(
         self,
-        tool_parameters: Dict[str, Any],
+        tool_parameters: dict[str, Any],
     ) -> Generator[ToolInvokeMessage, None, None]:
         """
         Retrieves items from a specified Apify dataset, with optional pagination.
         """
-        api_token = self.runtime.credentials.get('apify_token')
+        api_token = self.runtime.credentials.get("apify_token")
         if not api_token:
             yield self.create_text_message("Error: Apify API Token not found in credentials.")
             return
 
-        dataset_id = tool_parameters.get('datasetId')
+        dataset_id = tool_parameters.get("datasetId")
         if not dataset_id:
             yield self.create_text_message("Error: Dataset ID ('datasetId') is a required parameter.")
             return
 
-        limit = tool_parameters.get('limit')
-        offset = tool_parameters.get('offset')
+        limit = tool_parameters.get("limit")
+        offset = tool_parameters.get("offset")
 
         try:
-            client = ApifyClient(
-                token=api_token,
-                timeout_secs=360
-            )
+            client = ApifyClient(token=api_token, timeout_secs=360)
             dataset_client = client.dataset(dataset_id)
             list_options = {
                 "limit": limit,

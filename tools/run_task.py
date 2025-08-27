@@ -1,42 +1,43 @@
 import json
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 
 from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
-
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
 
 class RunTask(Tool):
     def _invoke(
         self,
-        tool_parameters: Dict[str, Any],
+        tool_parameters: dict[str, Any],
     ) -> Generator[ToolInvokeMessage, None, None]:
         """
         Invokes a pre-configured Apify actor task, either waiting for it to finish
         or starting it and returning immediately.
         """
-        api_token = self.runtime.credentials.get('apify_token')
+        api_token = self.runtime.credentials.get("apify_token")
         if not api_token:
             yield self.create_text_message("Error: Apify API Token not found in credentials.")
             return
 
-        task_id = tool_parameters.get('taskId')
+        task_id = tool_parameters.get("taskId")
         if not task_id:
             yield self.create_text_message("Error: Task ID ('taskId') is a required parameter.")
             return
 
-        input_override_str = tool_parameters.get('input_override', '{}')
+        input_override_str = tool_parameters.get("input_override", "{}")
         try:
             input_override = json.loads(input_override_str)
         except json.JSONDecodeError:
             yield self.create_text_message("Error: Invalid JSON format in Input Override.")
             return
 
-        wait_for_finish = tool_parameters.get('wait_for_finish', False)
-        build = tool_parameters.get('build')
-        timeout_secs = tool_parameters.get('timeout')
-        memory_mb = tool_parameters.get('memory')
+        wait_for_finish = tool_parameters.get("wait_for_finish", False)
+        build = tool_parameters.get("build")
+        timeout_secs = tool_parameters.get("timeout")
+        memory_mb = tool_parameters.get("memory")
 
         try:
             client = ApifyClient(token=api_token, timeout_secs=360)

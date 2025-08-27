@@ -1,42 +1,45 @@
 import json
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 
 from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
-
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
 
 class RunActor(Tool):
     def _invoke(
         self,
-        tool_parameters: Dict[str, Any],
+        tool_parameters: dict[str, Any],
     ) -> Generator[ToolInvokeMessage, None, None]:
         """
         Synchronously invokes an Apify actor, either waiting for it to finish or starting it
         and returning immediately.
         """
-        api_token = self.runtime.credentials.get('apify_token')
+        api_token = self.runtime.credentials.get("apify_token")
         if not api_token:
-            yield self.create_text_message("Error: Apify API Token not found in credentials. Please configure it in the plugin settings.")
+            yield self.create_text_message(
+                "Error: Apify API Token not found in credentials. Please configure it in the plugin settings."
+            )
             return
 
-        actor_id = tool_parameters.get('actorId')
+        actor_id = tool_parameters.get("actorId")
         if not actor_id:
             yield self.create_text_message("Error: Actor ID ('actorId') is a required parameter.")
             return
 
-        input_body_str = tool_parameters.get('input_body', '{}')
+        input_body_str = tool_parameters.get("input_body", "{}")
         try:
             run_input = json.loads(input_body_str)
         except json.JSONDecodeError:
             yield self.create_text_message("Error: Invalid JSON format in Input Body ('input_body').")
             return
 
-        wait_for_finish = tool_parameters.get('wait_for_finish', False)
-        build = tool_parameters.get('build')
-        timeout_secs = tool_parameters.get('timeout')
-        memory_mb = tool_parameters.get('memory')
+        wait_for_finish = tool_parameters.get("wait_for_finish", False)
+        build = tool_parameters.get("build")
+        timeout_secs = tool_parameters.get("timeout")
+        memory_mb = tool_parameters.get("memory")
 
         try:
             client = ApifyClient(token=api_token, timeout_secs=360)
