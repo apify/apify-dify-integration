@@ -1,68 +1,62 @@
 import base64
-from typing import Any, Dict, Generator
+from collections.abc import Generator
+from typing import Any
 
 from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
-
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 
 class GetKeyValueStoreRecord(Tool):
     def _invoke(
-            self,
-            tool_parameters: Dict[str, Any],
+        self,
+        tool_parameters: dict[str, Any],
     ) -> Generator[ToolInvokeMessage, None, None]:
         """
         Retrieves a single record from a specified Apify key-value store.
         Handles different content types (JSON, text, binary).
         """
-        api_token = self.runtime.credentials.get('apify_token')
+        api_token = self.runtime.credentials.get("apify_token")
         if not api_token:
             yield self.create_text_message("Error: Apify API Token not found in credentials.")
             return
 
-        store_id = tool_parameters.get('storeId')
+        store_id = tool_parameters.get("storeId")
         if not store_id:
             yield self.create_text_message("Error: Store ID ('storeId') is a required parameter.")
             return
 
-        record_key = tool_parameters.get('recordKey')
+        record_key = tool_parameters.get("recordKey")
         if not record_key:
             yield self.create_text_message("Error: Record Key ('recordKey') is a required parameter.")
             return
 
         try:
-            client = ApifyClient(
-                token=api_token,
-                timeout_secs=360
-            )
+            client = ApifyClient(token=api_token, timeout_secs=360)
 
             record = client.key_value_store(store_id).get_record(record_key)
             print(record)
             if not record:
                 raise Exception(f"Record with key '{record_key}' not found in store '{store_id}'.")
 
-            record_value = record.get('value')
-            content_type = record.get('contentType', 'application/octet-stream')  # Default to binary if no content type
+            record_value = record.get("value")
+            content_type = record.get("contentType", "application/octet-stream")  # Default to binary if no content type
             processed_value = None
 
             # Handle Different Formats
             if isinstance(record_value, bytes):
                 # If the content type indicates text or json, decode it.
-                if 'text' in content_type or 'json' in content_type:
-                    processed_value = record_value.decode('utf-8')
+                if "text" in content_type or "json" in content_type:
+                    processed_value = record_value.decode("utf-8")
                 else:
                     # Otherwise, it's binary data; encode it in Base64.
-                    processed_value = base64.b64encode(record_value).decode('ascii')
+                    processed_value = base64.b64encode(record_value).decode("ascii")
             else:
                 # If it's not bytes, the client has already parsed it. We will use it as is.
                 processed_value = record_value
 
-            output = {
-                "result": processed_value,
-                "contentType": content_type
-            }
+            output = {"result": processed_value, "contentType": content_type}
 
             yield self.create_json_message(output)
 
