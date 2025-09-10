@@ -3,7 +3,7 @@ settings:
     type: app-selector
     required: true
     label:
-      en_US: App
+      en_US: Apify webhook
 
 endpoints:
   - endpoints/apify_webhook.yaml
