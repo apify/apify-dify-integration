@@ -2,6 +2,13 @@ import json
 from typing import Any, Mapping, Dict
 from werkzeug import Request, Response
 from dify_plugin import Endpoint
+from enum import Enum
+from http import HTTPStatus
+
+
+class DifyResponseMode(Enum):
+    STREAMING = "streaming"
+    BLOCKING = "blocking"
 
 
 class ApifyWebhookEndpoint(Endpoint):
@@ -15,7 +22,9 @@ class ApifyWebhookEndpoint(Endpoint):
         app_id = settings.get("app_selector").get("app_id")
 
         if not app_id or not isinstance(app_id, str):
-            return Response(json.dumps({"error": "app_id not configured"}), status=404, mimetype="application/json")
+            return Response(
+                json.dumps({"error": "app_id not configured"}), status=HTTPStatus.NOT_FOUND, mimetype="application/json"
+            )
 
         path: str = (r.path or "").strip()
 
@@ -25,7 +34,7 @@ class ApifyWebhookEndpoint(Endpoint):
             if not isinstance(query, str) or not query:
                 return Response(
                     json.dumps({"error": "query must be a non-empty string"}),
-                    status=400,
+                    status=HTTPStatus.BAD_REQUEST,
                     mimetype="application/json",
                 )
 
@@ -35,7 +44,7 @@ class ApifyWebhookEndpoint(Endpoint):
                         app_id=app_id,
                         query=query,
                         inputs=self._flatten_dict(request_body),
-                        response_mode="streaming",
+                        response_mode=DifyResponseMode.STREAMING,
                     )
 
                     for data in response_generator:
@@ -47,7 +56,7 @@ class ApifyWebhookEndpoint(Endpoint):
 
             return Response(
                 stream_generator(),
-                status=200,
+                status=HTTPStatus.OK,
                 mimetype="text/event-stream",
             )
 
@@ -56,19 +65,23 @@ class ApifyWebhookEndpoint(Endpoint):
                 dify_resp = self.session.app.workflow.invoke(
                     app_id=app_id,
                     inputs=self._flatten_dict(request_body),
-                    response_mode="blocking",
+                    response_mode=DifyResponseMode.BLOCKING,
                 )
 
                 return Response(
                     response=dify_resp,
-                    status=200,
+                    status=HTTPStatus.OK,
                     content_type="application/json",
                 )
             except Exception as e:
-                print("WORKFLOW", e)
-                return Response(json.dumps({"error": str(e)}), status=500, mimetype="application/json")
+                print("An error occurred in workflow", e)
+                return Response(
+                    json.dumps({"error": str(e)}), status=HTTPStatus.INTERNAL_SERVER_ERROR, mimetype="application/json"
+                )
 
-        return Response(json.dumps({"error": "Invalid webhook path"}), status=404, mimetype="application/json")
+        return Response(
+            json.dumps({"error": "Invalid webhook path"}), status=HTTPStatus.NOT_FOUND, mimetype="application/json"
+        )
 
     def _flatten_dict(self, data: Any, parent_key: str = "", sep: str = "__") -> Dict[str, Any]:
         items: Dict[str, Any] = {}

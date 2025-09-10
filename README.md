@@ -10,6 +10,7 @@ This repository contains a plugin for the [Dify.ai](https://dify.ai/) platform, 
 - **Get Key-Value Store Record** – Fetch a record from an Apify key-value store.  
 - **Actor Run Finished Trigger** – Trigger downstream actions in Dify when an Apify actor or task run finishes.  
 - **Flexible Execution Modes** – Choose between asynchronous (fast return) and synchronous (wait for results) execution.
+- **Finished Trigger (Webhook)** – Trigger Dify workflows automatically upon the completion of an Apify Actor or task.
 
 ## Prerequisites
 

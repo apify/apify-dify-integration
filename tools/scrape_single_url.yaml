@@ -7,7 +7,7 @@ description:
   human:
     en_US: Scrapes a single web page and returns its content. Can run synchronously to return results directly, or asynchronously to return run details.
   llm: |
-    This tool scrapes a single web page using the Apify Website Content Crawler. It requires a URL. The `wait_for_finish` parameter is critical: if `true` (the default), it waits for the scrape to complete and returns an array of the scraped data items. If `false`, it starts the scrape and immediately returns a JSON object with the actor run's details.
+    This tool scrapes a single web page using the Apify Website Content Crawler. It requires a URL. The `wait_for_finish` parameter is critical: if `true` (the default), it waits for the scrape to complete and returns an array of the scraped data items. If `false`, it starts the scrape and immediately returns a JSON object with the Actor run's details.
 parameters:
   - name: url
     type: string
@@ -44,16 +44,6 @@ parameters:
       - value: playwright:chrome
         label:
           en_US: Chrome (Headless Browser) [DEPRECATED]
-  - name: wait_for_finish
-    type: boolean
-    required: false
-    form: llm
-    label:
-      en_US: Wait for Finish
-    human_description:
-      en_US: If checked, wait for the scrape to finish and return results. If unchecked, start the scrape and return immediately.
-    llm_description: A boolean (`true` or `false`). If `true` (default), the tool waits for the scrape to complete and returns the dataset items. If `false`, it returns the initial run object immediately.
-    default: true
 extra:
   python:
     source: tools/scrape_single_url.py

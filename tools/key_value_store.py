@@ -2,10 +2,11 @@ import base64
 from collections.abc import Generator
 from typing import Any
 
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
+from tools.client import get_apify_client
 
 
 class GetKeyValueStoreRecord(Tool):
@@ -18,10 +19,6 @@ class GetKeyValueStoreRecord(Tool):
         Handles different content types (JSON, text, binary).
         """
         api_token = self.runtime.credentials.get("apify_token")
-        if not api_token:
-            yield self.create_text_message("Error: Apify API Token not found in credentials.")
-            return
-
         store_id = tool_parameters.get("storeId")
         if not store_id:
             yield self.create_text_message("Error: Store ID ('storeId') is a required parameter.")
@@ -33,10 +30,8 @@ class GetKeyValueStoreRecord(Tool):
             return
 
         try:
-            client = ApifyClient(token=api_token, timeout_secs=360)
-
+            client = get_apify_client(api_token)
             record = client.key_value_store(store_id).get_record(record_key)
-            print(record)
             if not record:
                 raise Exception(f"Record with key '{record_key}' not found in store '{store_id}'.")
 
