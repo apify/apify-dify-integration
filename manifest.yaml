@@ -17,7 +17,6 @@ icon_dark: icon-dark.svg
 plugin_tag:
   - "tools"
   - "automation"
-  - "tools"
 resource:
   memory: 268435456
   permission:
