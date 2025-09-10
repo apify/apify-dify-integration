@@ -18,9 +18,9 @@ class ApifyWebhookEndpoint(Endpoint):
             request_body = r.get_json()
             inputs = request_body.get("inputs", {})
             if not isinstance(inputs, dict):
-                print("Invalid inputs type: expected object, got %s", type(inputs).__name__)
+                print("Invalid 'inputs' type: expected object, got %s", type(inputs).__name__)
                 return Response(
-                    json.dumps({"error": "inputs must be an object"}), status=400, content_type="application/json"
+                    json.dumps({"error": "'inputs' must be an object"}), status=400, content_type="application/json"
                 )
 
             workflow_response = self.session.app.workflow.invoke(app_id=app_id, inputs=inputs, response_mode="blocking")
