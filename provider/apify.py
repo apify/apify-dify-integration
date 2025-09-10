@@ -6,7 +6,7 @@ from dify_plugin.errors.tool import ToolProviderCredentialValidationError
 from http import HTTPStatus
 
 
-def _get_client(token: str) -> ApifyClient:
+def get_client(token: str) -> ApifyClient:
     return ApifyClient(token=token, timeout_secs=360)
 
 
@@ -18,7 +18,7 @@ class ApifyProvider(ToolProvider):
             raise ToolProviderCredentialValidationError(msg)
 
         try:
-            client = _get_client(token)
+            client = get_client(token)
             _ = client.user().get()
             return
         except ApifyApiError as e:
