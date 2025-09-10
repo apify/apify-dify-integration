@@ -3,9 +3,7 @@ from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import ToolProvider
 from dify_plugin.errors.tool import ToolProviderCredentialValidationError
-
-HTTP_UNAUTHORIZED = 401
-HTTP_FORBIDDEN = 403
+from http import HTTPStatus
 
 
 def _get_client(token: str) -> ApifyClient:
@@ -25,10 +23,10 @@ class ApifyProvider(ToolProvider):
             return
         except ApifyApiError as e:
             code = getattr(e, "status_code", None)
-            if code == HTTP_UNAUTHORIZED:
+            if code == HTTPStatus.UNAUTHORIZED:
                 msg = "Invalid Apify API Token. Please check the token and try again."
                 raise ToolProviderCredentialValidationError(msg) from e
-            if code == HTTP_FORBIDDEN:
+            if code == HTTPStatus.FORBIDDEN:
                 msg = "Apify API Token lacks required permissions (403 Forbidden)."
                 raise ToolProviderCredentialValidationError(msg) from e
 
