@@ -1,10 +1,11 @@
 from collections.abc import Generator
 from typing import Any
 
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
+from tools.client import get_apify_client
 
 
 class GetDatasetItems(Tool):
@@ -16,10 +17,6 @@ class GetDatasetItems(Tool):
         Retrieves items from a specified Apify dataset, with optional pagination.
         """
         api_token = self.runtime.credentials.get("apify_token")
-        if not api_token:
-            yield self.create_text_message("Error: Apify API Token not found in credentials.")
-            return
-
         dataset_id = tool_parameters.get("datasetId")
         if not dataset_id:
             yield self.create_text_message("Error: Dataset ID ('datasetId') is a required parameter.")
@@ -29,7 +26,7 @@ class GetDatasetItems(Tool):
         offset = tool_parameters.get("offset")
 
         try:
-            client = ApifyClient(token=api_token, timeout_secs=360)
+            client = get_apify_client(api_token)
             dataset_client = client.dataset(dataset_id)
             list_options = {
                 "limit": limit,

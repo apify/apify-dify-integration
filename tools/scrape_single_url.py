@@ -1,12 +1,13 @@
 from collections.abc import Generator
 from typing import Any
 
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
-WEBSITE_CONTENT_CRAWLER_ID = "aYG0l9s7dbB7j3gbS"
+from tools.client import get_apify_client
+
+WEBSITE_CONTENT_CRAWLER_ID = "apify/website-content-crawler"
 
 
 class ScrapeSingleUrl(Tool):
@@ -19,20 +20,15 @@ class ScrapeSingleUrl(Tool):
         and returning immediately
         """
         api_token = self.runtime.credentials.get("apify_token")
-        if not api_token:
-            yield self.create_text_message("Error: Apify API Token not found in credentials.")
-            return
-
         url = tool_parameters.get("url")
         if not url:
             yield self.create_text_message("Error: URL is a required parameter.")
             return
 
         crawler_type = tool_parameters.get("crawler_type", "playwright:adaptive")
-        wait_for_finish = tool_parameters.get("wait_for_finish", True)
 
         try:
-            client = ApifyClient(token=api_token, timeout_secs=360)
+            client = get_apify_client(api_token)
 
             actor_input = {
                 "startUrls": [{"url": url}],
@@ -47,20 +43,11 @@ class ScrapeSingleUrl(Tool):
             }
 
             actor_client = client.actor(WEBSITE_CONTENT_CRAWLER_ID)
-
-            run_details = None
-
-            if wait_for_finish:
-                # Synchronous Execution
-                actor_result = actor_client.call(run_input=actor_input)
-                dataset_id = actor_result["defaultDatasetId"]
-                dataset_client = client.dataset(dataset_id)
-                run_details = dataset_client.list_items().items
-            else:
-                # Asynchronous Execution
-                run_details = actor_client.start(run_input=actor_input)
-
-            output_data = {"result": run_details}
+            actor_result = actor_client.call(run_input=actor_input)
+            dataset_id = actor_result["defaultDatasetId"]
+            dataset_client = client.dataset(dataset_id)
+            scraped_item = dataset_client.list_items().items[0]
+            output_data = {"result": scraped_item}
 
             yield self.create_json_message(output_data)
 

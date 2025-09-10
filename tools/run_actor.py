@@ -2,10 +2,11 @@ import json
 from collections.abc import Generator
 from typing import Any
 
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
+from tools.client import get_apify_client
 
 
 class RunActor(Tool):
@@ -18,12 +19,6 @@ class RunActor(Tool):
         and returning immediately.
         """
         api_token = self.runtime.credentials.get("apify_token")
-        if not api_token:
-            yield self.create_text_message(
-                "Error: Apify API Token not found in credentials. Please configure it in the plugin settings."
-            )
-            return
-
         actor_id = tool_parameters.get("actorId")
         if not actor_id:
             yield self.create_text_message("Error: Actor ID ('actorId') is a required parameter.")
@@ -42,7 +37,7 @@ class RunActor(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = ApifyClient(token=api_token, timeout_secs=360)
+            client = get_apify_client(api_token)
             actor_client = client.actor(actor_id)
 
             run_options = {

@@ -20,7 +20,7 @@ credentials_for_provider:
     url: 'https://console.apify.com/account/integrations'
 tools:
     - tools/run_actor.yaml
-    - tools/run_task.yaml
+    - tools/run_actor_task.yaml
     - tools/scrape_single_url.yaml
     - tools/get_dataset_items.yaml
     - tools/key_value_store.yaml
