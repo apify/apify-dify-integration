@@ -6,4 +6,5 @@ settings:
       en_US: Apify webhook
 
 endpoints:
-  - endpoints/apify_webhook.yaml
+  - endpoints/apify_webhook_workflow.yaml
+  - endpoints/apify_webhook_chatflow.yaml

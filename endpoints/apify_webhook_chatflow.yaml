@@ -1,4 +1,4 @@
-path: "/apify-webhook-callback"
+path: "/apify-chatflow-webhook-callback"
 method: "POST"
 extra:
   python:

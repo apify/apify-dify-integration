@@ -13,7 +13,7 @@ class ApifyWebhookEndpoint(Endpoint):
         settings: Mapping[str, Any],
     ) -> Response:
         app_id = settings["app_selector"]["app_id"]
-
+        print("PATH", r.path)
         try:
             request_body = r.get_json()
             resource = request_body.get("resource", {})
