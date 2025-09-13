@@ -13,9 +13,10 @@ class ApifyWebhookEndpoint(Endpoint):
         settings: Mapping[str, Any],
     ) -> Response:
         app_id = settings["app_selector"]["app_id"]
-        print("PATH", r.path)
+
         try:
             request_body = r.get_json()
+            print("PATH", r.path)
             resource = request_body.get("resource", {})
             if not isinstance(resource, dict):
                 print("Invalid 'resource' type: expected object, got %s", type(resource).__name__)
@@ -23,7 +24,7 @@ class ApifyWebhookEndpoint(Endpoint):
                     json.dumps({"error": "'resource' must be an object"}), status=400, content_type="application/json"
                 )
             workflow_response = self.session.app.workflow.invoke(
-                app_id=app_id, inputs=resource, response_mode="blocking"
+                app_id=app_id, inputs=request_body, response_mode="blocking"
             )
 
             return Response(
