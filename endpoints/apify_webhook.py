@@ -1,6 +1,5 @@
 import json
-from typing import Any, Mapping
-
+from typing import Any, Mapping, Dict
 from werkzeug import Request, Response
 from dify_plugin import Endpoint
 
@@ -12,37 +11,79 @@ class ApifyWebhookEndpoint(Endpoint):
         values: Mapping[str, Any],
         settings: Mapping[str, Any],
     ) -> Response:
-        app_id = settings["app_selector"]["app_id"]
+        request_body = r.get_json()
+        app_id = settings.get("app_selector").get("app_id")
 
-        try:
-            request_body = r.get_json()
-            print("PATH", r.path)
-            resource = request_body.get("resource", {})
-            if not isinstance(resource, dict):
-                print("Invalid 'resource' type: expected object, got %s", type(resource).__name__)
+        if not app_id or not isinstance(app_id, str):
+            return Response(json.dumps({"error": "app_id not configured"}), status=404, mimetype="application/json")
+
+        path: str = (r.path or "").strip()
+
+        if path.endswith("/apify-chatflow-webhook-callback"):
+            query = request_body.get("query")
+
+            if not isinstance(query, str) or not query:
                 return Response(
-                    json.dumps({"error": "'resource' must be an object"}), status=400, content_type="application/json"
+                    json.dumps({"error": "query must be a non-empty string"}),
+                    status=400,
+                    mimetype="application/json",
                 )
-            workflow_response = self.session.app.workflow.invoke(
-                app_id=app_id, inputs=request_body, response_mode="blocking"
-            )
+
+            def stream_generator():
+                try:
+                    response_generator = self.session.app.chat.invoke(
+                        app_id=app_id,
+                        query=query,
+                        inputs=self._flatten_dict(request_body),
+                        response_mode="streaming",
+                    )
+
+                    for data in response_generator:
+                        yield f"data: {json.dumps(data)}\n\n"
+
+                except Exception as e:
+                    error_data = {"error": f"Error during stream: {str(e)}"}
+                    yield f"data: {json.dumps(error_data)}\n\n"
 
             return Response(
-                json.dumps(workflow_response),
+                stream_generator(),
                 status=200,
-                content_type="application/json",
+                mimetype="text/event-stream",
             )
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            error_payload = {
-                "status": "error",
-                "message": "An internal error occurred while processing the webhook.",
-                "details": str(e),
-            }
+        if path.endswith("/apify-workflow-webhook-callback"):
+            try:
+                dify_resp = self.session.app.workflow.invoke(
+                    app_id=app_id,
+                    inputs=self._flatten_dict(request_body),
+                    response_mode="blocking",
+                )
 
-            return Response(
-                json.dumps(error_payload),
-                status=500,
-                mimetype="application/json",
-            )
+                return Response(
+                    response=dify_resp,
+                    status=200,
+                    content_type="application/json",
+                )
+            except Exception as e:
+                print("WORKFLOW", e)
+                return Response(json.dumps({"error": str(e)}), status=500, mimetype="application/json")
+
+        return Response(json.dumps({"error": "Invalid webhook path"}), status=404, mimetype="application/json")
+
+    def _flatten_dict(self, data: Any, parent_key: str = "", sep: str = "__") -> Dict[str, Any]:
+        items: Dict[str, Any] = {}
+
+        def _flatten(value: Any, current_key: str) -> None:
+            if isinstance(value, dict):
+                for k, v in value.items():
+                    new_key = f"{current_key}{sep}{k}" if current_key else str(k)
+                    _flatten(v, new_key)
+            elif isinstance(value, list):
+                for idx, v in enumerate(value):
+                    new_key = f"{current_key}{sep}{idx}" if current_key else str(idx)
+                    _flatten(v, new_key)
+            else:
+                items[current_key] = value
+
+        _flatten(data, parent_key)
+        return items
