@@ -14,12 +14,21 @@ description:
   pt_BR: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
 icon: icon.svg
 icon_dark: icon-dark.svg
+plugin_tag:
+  - "tools"
+  - "automation"
 resource:
   memory: 268435456
-  permission: {}
+  permission:
+    endpoint:
+      enabled: true
+    app:
+      enabled: true
 plugins:
   tools:
     - provider/apify.yaml
+  endpoints:
+    - group/apify_webhook.yaml
 meta:
   version: 0.0.1
   arch:

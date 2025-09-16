@@ -1,0 +1,10 @@
+settings:
+  - name: app_selector
+    type: app-selector
+    required: true
+    label:
+      en_US: Apify webhook
+
+endpoints:
+  - endpoints/apify_webhook_workflow.yaml
+  - endpoints/apify_webhook_chatflow.yaml

@@ -1,0 +1,5 @@
+path: "/apify-chatflow-webhook-callback"
+method: "POST"
+extra:
+  python:
+    source: "endpoints/apify_webhook.py"
