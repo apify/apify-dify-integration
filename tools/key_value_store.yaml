@@ -26,29 +26,6 @@ parameters:
     human_description:
       en_US: The key of the record to retrieve.
     llm_description: The key of the record to fetch from the specified store.
-  - name: format
-    type: select
-    required: false
-    form: llm
-    label:
-      en_US: Format Hint
-    human_description:
-      en_US: Optional hint for the data format.
-    llm_description: Optional. A hint for the expected format of the record. Can be auto, json, text, or binary.
-    default: auto
-    options:
-      - value: auto
-        label:
-          en_US: Auto
-      - value: json
-        label:
-          en_US: JSON
-      - value: text
-        label:
-          en_US: Text
-      - value: binary
-        label:
-          en_US: Binary
 extra:
   python:
     source: tools/key_value_store.py

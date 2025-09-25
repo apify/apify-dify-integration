@@ -2,10 +2,11 @@ import json
 from collections.abc import Generator
 from typing import Any
 
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+
+from tools.client import get_apify_client
 
 
 class RunTask(Tool):
@@ -18,10 +19,6 @@ class RunTask(Tool):
         or starting it and returning immediately.
         """
         api_token = self.runtime.credentials.get("apify_token")
-        if not api_token:
-            yield self.create_text_message("Error: Apify API Token not found in credentials.")
-            return
-
         task_id = tool_parameters.get("taskId")
         if not task_id:
             yield self.create_text_message("Error: Task ID ('taskId') is a required parameter.")
@@ -40,7 +37,7 @@ class RunTask(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = ApifyClient(token=api_token, timeout_secs=360)
+            client = get_apify_client(api_token)
             task_client = client.task(task_id)
 
             task_options = {

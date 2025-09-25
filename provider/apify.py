@@ -1,13 +1,10 @@
 from typing import Any
-from apify_client import ApifyClient
 from apify_client.errors import ApifyApiError
 from dify_plugin import ToolProvider
 from dify_plugin.errors.tool import ToolProviderCredentialValidationError
 from http import HTTPStatus
 
-
-def get_client(token: str) -> ApifyClient:
-    return ApifyClient(token=token, timeout_secs=360)
+from tools.client import get_apify_client
 
 
 class ApifyProvider(ToolProvider):
@@ -18,7 +15,7 @@ class ApifyProvider(ToolProvider):
             raise ToolProviderCredentialValidationError(msg)
 
         try:
-            client = get_client(token)
+            client = get_apify_client(token)
             _ = client.user().get()
             return
         except ApifyApiError as e:

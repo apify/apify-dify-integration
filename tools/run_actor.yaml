@@ -5,14 +5,14 @@ identity:
     en_US: Run Actor
 description:
   human:
-    en_US: Starts a specific Apify actor with a given JSON input. You can choose to wait for the run to complete or start it asynchronously.
+    en_US: Starts a specific Apify Actor with a given JSON input. You can choose to wait for the run to complete or start it asynchronously.
   llm: |
-    This tool executes a specific actor on the Apify platform by its unique identifier (actorId).
-    It requires a JSON object (input_body) that conforms to the actor's expected input schema.
+    This tool executes a specific Actor on the Apify platform by its unique identifier (actorId).
+    It requires a JSON object (input_body) that conforms to the Actor's expected input schema.
     The `wait_for_finish` parameter controls the execution mode: `false` (default) for asynchronous
     execution which returns immediately, and `true` for synchronous execution which waits for the
     run to complete. Optional parameters like `build`, `timeout`, and `memory` can be used to override
-    the actor's default settings. The tool returns a JSON object containing the details of the actor run.
+    the Actor's default settings. The tool returns a JSON object containing the details of the Actor run.
 parameters:
   - name: actorId
     type: string
@@ -20,18 +20,18 @@ parameters:
     label:
       en_US: Actor ID
     human_description:
-      en_US: The unique ID of the actor you want to run.
-    llm_description: The unique identifier for the Apify actor. This can be found in the Apify Console (e.g., aYG0l9s7dbB7j3gbS).
+      en_US: The unique ID of the Actor you want to run.
+    llm_description: The unique identifier for the Apify Actor. This can be found in the Apify Console (e.g., aYG0l9s7dbB7j3gbS).
     form: llm
   - name: input_body
     type: string
     label:
-      en_US: Input Body
+      en_US: Input
     human_description:
-      en_US: A JSON object containing the input for the actor.
+      en_US: A JSON object containing the input for the Actor.
     llm_description: |
-      A JSON formatted string representing the input for the actor. The structure of this JSON must
-      match the input schema defined by the actor developer. For example, for a web scraper, this might be:
+      A JSON formatted string representing the input for the Actor. The structure of this JSON must
+      match the input schema defined by the Actor developer. For example, for a web scraper, this might be:
       '{"startUrls": [{"url": "https://dify.ai"}]}'
     form: llm
   - name: build
@@ -41,7 +41,7 @@ parameters:
       en_US: Build
     human_description:
       en_US: The build tag or number to run (e.g., "latest" or "1.2.3").
-    llm_description: Optional. A specific build tag or number for the actor (e.g., "latest", "beta", "1.2.3"). If not provided, the default build is used.
+    llm_description: Optional. A specific build tag or number for the Actor (e.g., "latest", "beta", "1.2.3"). If not provided, the default build is used.
     form: llm
   - name: wait_for_finish
     type: boolean
@@ -49,8 +49,8 @@ parameters:
     label:
       en_US: Wait for Finish
     human_description:
-      en_US: If checked, the tool will wait for the actor run to complete before returning.
-    llm_description: A boolean (`true` or `false`). If `true`, the tool will wait for the actor run to reach a terminal state (e.g., SUCCEEDED, FAILED) before returning. If `false` (default), it returns immediately after starting the run.
+      en_US: If checked, the tool will wait for the Actor run to complete before returning.
+    llm_description: A boolean (`true` or `false`). If `true`, the tool will wait for the Actor run to reach a terminal state (e.g., SUCCEEDED, FAILED) before returning. If `false` (default), it returns immediately after starting the run.
     default: false
     form: llm
   - name: timeout
@@ -59,18 +59,47 @@ parameters:
     label:
       en_US: Timeout (seconds)
     human_description:
-      en_US: Maximum time in seconds the actor is allowed to run.
-    llm_description: Optional. The maximum number of seconds the actor run is allowed to execute. Overrides the actor's default timeout.
+      en_US: Maximum time in seconds the Actor is allowed to run.
+    llm_description: Optional. The maximum number of seconds the Actor run is allowed to execute. Overrides the Actor's default timeout.
     form: llm
   - name: memory
-    type: number
+    type: select
     required: false
+    form: llm
     label:
       en_US: Memory (MB)
     human_description:
-      en_US: The amount of memory in megabytes to allocate to the actor run.
-    llm_description: Optional. The amount of memory in megabytes to allocate for the actor run. Overrides the actor's default memory setting.
-    form: llm
+      en_US: The amount of memory in megabytes to allocate to the Actor run.
+    llm_description: Optional. The amount of memory in megabytes to allocate for the run. Overrides the task&#39;s default memory setting.
+    default: 128
+    options:
+      - value: 128
+        label:
+          en_US: 128 MB
+      - value: 256
+        label:
+          en_US: 256 MB
+      - value: 512
+        label:
+          en_US: 512 MB
+      - value: 1024
+        label:
+          en_US: 1024 MB (1 GB)
+      - value: 2048
+        label:
+          en_US: 2048 MB (2 GB)
+      - value: 4096
+        label:
+          en_US: 4096 MB (4 GB)
+      - value: 8192
+        label:
+          en_US: 8192 MB (8 GB)
+      - value: 16384
+        label:
+          en_US: 16384 MB (16 GB)
+      - value: 32768
+        label:
+          en_US: 32768 MB (32 GB)
 extra:
   python:
     source: tools/run_actor.py
