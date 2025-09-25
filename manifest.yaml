@@ -12,8 +12,8 @@ description:
   ja_JP: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
   zh_Hans: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
   pt_BR: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
-icon: icon.svg
-icon_dark: icon-dark.svg
+icon: apify.svg
+icon_dark: apify.svg
 plugin_tag:
   - "tools"
   - "automation"
