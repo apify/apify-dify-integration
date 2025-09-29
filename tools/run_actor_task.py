@@ -18,7 +18,6 @@ class RunTask(Tool):
         Invokes a pre-configured Apify actor task, either waiting for it to finish
         or starting it and returning immediately.
         """
-        api_token = self.runtime.credentials.get("apify_token")
         task_id = tool_parameters.get("taskId")
         if not task_id:
             yield self.create_text_message("Error: Task ID ('taskId') is a required parameter.")
@@ -37,7 +36,7 @@ class RunTask(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = get_apify_client(api_token)
+            client = get_apify_client(self.runtime)
             task_client = client.task(task_id)
 
             task_options = {

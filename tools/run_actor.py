@@ -18,7 +18,6 @@ class RunActor(Tool):
         Synchronously invokes an Apify actor, either waiting for it to finish or starting it
         and returning immediately.
         """
-        api_token = self.runtime.credentials.get("apify_token")
         actor_id = tool_parameters.get("actorId")
         if not actor_id:
             yield self.create_text_message("Error: Actor ID ('actorId') is a required parameter.")
@@ -37,7 +36,7 @@ class RunActor(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = get_apify_client(api_token)
+            client = get_apify_client(self.runtime)
             actor_client = client.actor(actor_id)
 
             run_options = {
