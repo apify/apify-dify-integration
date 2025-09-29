@@ -1,5 +1,23 @@
+[project]
+name = "dify-apify-integration"
+version = "0.1.0"
+description = "A Dify plugin for integrating with the Apify platform."
+requires-python = ">=3.12"
+
+dependencies = [
+    "requests",
+    "werkzeug",
+    "dify_plugin>=0.4.2,<0.5.0",
+    "apify-client",
+]
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "ruff",
+]
+
 [tool.ruff]
-# Exclude common non-source directories
 exclude = [
     ".bzr",
     ".direnv",
@@ -37,22 +55,28 @@ target-version = "py312"
 [tool.ruff.lint]
 select = ["E", "W", "F"]
 ignore = [
-    "E203",  # keep consistent with Flake8's extend-ignore
+    "E203",
 ]
 
-# Allow fix for all enabled rules (when you pass --fix)
 fixable = ["ALL"]
 unfixable = []
 
-# Per-file relaxations (match Flake8)
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F401"]
 
 
 [tool.ruff.format]
-# Like Black, use double quotes for strings.
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
 docstring-code-line-length = "dynamic"
+
+[tool.setuptools.packages.find]
+include = [
+    "provider",
+    "tools",
+    "endpoints",
+    "group",
+    "utils"
+]
