@@ -17,6 +17,7 @@ This repository contains a plugin for the [Dify.ai](https://dify.ai/) platform, 
 Before you begin, ensure you have the following installed and configured:
 
   * **Python**: Version `3.12` or newer is required.
+  * **UV**: You also need pre-installed [UV package manager](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) for Python
   * **Apify Account**: You will need an Apify account and your personal API Token. You can find your token in the [Apify Console](https://console.apify.com/account/integrations).
   * **Dify Account**: A Dify account to test the plugin.
 
@@ -68,10 +69,10 @@ It is highly recommended to use a virtual environment to manage project dependen
 
 ```bash
 # Create the virtual environment
-python3 -m venv .venv
+uv venv
 
 # Activate it (on macOS/Linux)
-source .venv/bin/activate
+uv pip install -e ".[dev]"
 ```
 
 **8. Install Dependencies**
