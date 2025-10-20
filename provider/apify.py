@@ -17,7 +17,7 @@ from tools.client import get_apify_client
 
 APIFY_AUTHORIZATION_URL = "https://console.apify.com/authorize/oauth"
 APIFY_TOKEN_URL = "https://console-backend.apify.com/oauth/apps/token"
-APIFY_SCOPES =  ["profile", "full_api_access"]
+APIFY_SCOPES = ["profile", "full_api_access"]
 APIFY_REQUEST_TIMEOUT = 10  # seconds
 APIFY_DEFAULT_TOKEN_EXPIRY = 3600
 
@@ -34,7 +34,7 @@ class ApifyProvider(ToolProvider):
                 raise ToolProviderCredentialValidationError(
                     "No valid authentication token found. Expected 'access_token' or 'apify_token'."
                 )
-            
+
             client = get_apify_client(credentials, credential_type)
             _ = client.user().get()
             return
