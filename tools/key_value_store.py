@@ -29,7 +29,7 @@ class GetKeyValueStoreRecord(Tool):
             return
 
         try:
-            client = get_apify_client(self.runtime)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             record = client.key_value_store(store_id).get_record(record_key)
             if not record:
                 raise Exception(f"Record with key '{record_key}' not found in store '{store_id}'.")

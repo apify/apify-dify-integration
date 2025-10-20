@@ -25,7 +25,7 @@ class GetDatasetItems(Tool):
         offset = tool_parameters.get("offset")
 
         try:
-            client = get_apify_client(self.runtime)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             dataset_client = client.dataset(dataset_id)
             list_options = {
                 "limit": limit,

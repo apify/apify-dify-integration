@@ -36,7 +36,7 @@ class RunTask(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = get_apify_client(self.runtime)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             task_client = client.task(task_id)
 
             task_options = {

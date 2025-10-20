@@ -10,19 +10,32 @@ import requests
 from dify_plugin import ToolProvider
 from dify_plugin.errors.tool import ToolProviderCredentialValidationError
 from dify_plugin.entities.oauth import ToolOAuthCredentials
+from dify_plugin.entities.tool import CredentialType
 from dify_plugin.errors.tool import ToolProviderOAuthError
 
 from tools.client import get_apify_client
 
-APIFY_AUTHORIZATION_URL = "https://auth.apify.com/oauth/authorize"
-APIFY_TOKEN_URL = "https://auth.apify.com/oauth/token"
-APIFY_SCOPES = "user:read actor:run"
+APIFY_AUTHORIZATION_URL = "https://console.apify.com/authorize/oauth"
+APIFY_TOKEN_URL = "https://console-backend.apify.com/oauth/apps/token"
+APIFY_SCOPES =  ["profile", "full_api_access"]
+APIFY_REQUEST_TIMEOUT = 10  # seconds
+APIFY_DEFAULT_TOKEN_EXPIRY = 3600
 
 
 class ApifyProvider(ToolProvider):
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         try:
-            client = get_apify_client(credentials)
+            # Determine credential type based on available keys
+            if "access_token" in credentials:
+                credential_type = CredentialType.OAUTH
+            elif "apify_token" in credentials:
+                credential_type = CredentialType.API_KEY
+            else:
+                raise ToolProviderCredentialValidationError(
+                    "No valid authentication token found. Expected 'access_token' or 'apify_token'."
+                )
+            
+            client = get_apify_client(credentials, credential_type)
             _ = client.user().get()
             return
         except ApifyApiError as e:
@@ -94,7 +107,7 @@ class ApifyProvider(ToolProvider):
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         try:
-            response = requests.post(APIFY_TOKEN_URL, data=payload, headers=headers, timeout=10)
+            response = requests.post(APIFY_TOKEN_URL, data=payload, headers=headers, timeout=APIFY_REQUEST_TIMEOUT)
             response.raise_for_status()
             token_data = response.json()
 
@@ -113,11 +126,10 @@ class ApifyProvider(ToolProvider):
             }
 
             refresh_token = token_data.get("refresh_token")
-
             if refresh_token:
                 credentials["refresh_token"] = refresh_token
 
-            expires_in = token_data.get("expires_in", 3600)
+            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY)
             expires_at = int(time.time()) + expires_in
 
             return ToolOAuthCredentials(credentials=credentials, expires_at=expires_at)
@@ -168,7 +180,7 @@ class ApifyProvider(ToolProvider):
                 "refresh_token": refresh_token,  # Keep existing refresh token
             }
 
-            expires_in = token_data.get("expires_in", 3600)
+            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY)
 
             new_refresh_token = token_data.get("refresh_token")
             if new_refresh_token:

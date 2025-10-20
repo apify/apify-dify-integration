@@ -36,7 +36,7 @@ class RunActor(Tool):
         memory_mb = tool_parameters.get("memory")
 
         try:
-            client = get_apify_client(self.runtime)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             actor_client = client.actor(actor_id)
 
             run_options = {

@@ -27,7 +27,7 @@ class ScrapeSingleUrl(Tool):
         crawler_type = tool_parameters.get("crawler_type", "playwright:adaptive")
 
         try:
-            client = get_apify_client(self.runtime)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
 
             actor_input = {
                 "startUrls": [{"url": url}],

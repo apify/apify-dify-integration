@@ -14,7 +14,6 @@ oauth_schema:
         en_US: "Apify OAuth Client ID"
       type: "secret-input"
       required: true
-      url: "https://docs.apify.com/platform/integrations/oauth"
     - name: "client_secret"
       label:
         en_US: "Apify OAuth Client Secret"
