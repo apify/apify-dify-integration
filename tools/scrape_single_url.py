@@ -19,7 +19,6 @@ class ScrapeSingleUrl(Tool):
         Invokes the Apify Website Content Crawler for a single URL. Either waiting for it to finish or starting it
         and returning immediately
         """
-        api_token = self.runtime.credentials.get("apify_token")
         url = tool_parameters.get("url")
         if not url:
             yield self.create_text_message("Error: URL is a required parameter.")
@@ -28,7 +27,7 @@ class ScrapeSingleUrl(Tool):
         crawler_type = tool_parameters.get("crawler_type", "playwright:adaptive")
 
         try:
-            client = get_apify_client(api_token)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
 
             actor_input = {
                 "startUrls": [{"url": url}],

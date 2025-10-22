@@ -16,7 +16,6 @@ class GetDatasetItems(Tool):
         """
         Retrieves items from a specified Apify dataset, with optional pagination.
         """
-        api_token = self.runtime.credentials.get("apify_token")
         dataset_id = tool_parameters.get("datasetId")
         if not dataset_id:
             yield self.create_text_message("Error: Dataset ID ('datasetId') is a required parameter.")
@@ -26,7 +25,7 @@ class GetDatasetItems(Tool):
         offset = tool_parameters.get("offset")
 
         try:
-            client = get_apify_client(api_token)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             dataset_client = client.dataset(dataset_id)
             list_options = {
                 "limit": limit,

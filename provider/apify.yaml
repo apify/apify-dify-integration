@@ -7,14 +7,38 @@ identity:
     en_US: 'A plugin to run Apify actors and tasks.'
   icon: 'apify.svg'
 
+oauth_schema:
+  client_schema:
+    - name: "client_id"
+      label:
+        en_US: "Apify OAuth Client ID"
+      type: "secret-input"
+      required: true
+    - name: "client_secret"
+      label:
+        en_US: "Apify OAuth Client Secret"
+      type: "secret-input"
+      required: true
+  credentials_schema:
+    - name: "access_token"
+      label:
+        en_US: "Access Token"
+      type: "secret-input"
+    - name: "refresh_token"
+      label:
+        en_US: "Refresh Token"
+      type: "secret-input"
+    - name: "expires_at"
+      label:
+        en_US: "Expires At"
+      type: "secret-input"
+
 credentials_for_provider:
   apify_token:
     type: 'secret-input'
-    required: true
+    required: false
     label:
       en_US: 'Apify API Token'
-    placeholder:
-      en_US: 'Enter your Apify API Token'
     help:
       en_US: "You can find your API token in your Apify account settings under the 'Integrations' tab."
     url: 'https://console.apify.com/account/integrations'

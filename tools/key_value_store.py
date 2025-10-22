@@ -18,7 +18,6 @@ class GetKeyValueStoreRecord(Tool):
         Retrieves a single record from a specified Apify key-value store.
         Handles different content types (JSON, text, binary).
         """
-        api_token = self.runtime.credentials.get("apify_token")
         store_id = tool_parameters.get("storeId")
         if not store_id:
             yield self.create_text_message("Error: Store ID ('storeId') is a required parameter.")
@@ -30,7 +29,7 @@ class GetKeyValueStoreRecord(Tool):
             return
 
         try:
-            client = get_apify_client(api_token)
+            client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             record = client.key_value_store(store_id).get_record(record_key)
             if not record:
                 raise Exception(f"Record with key '{record_key}' not found in store '{store_id}'.")
