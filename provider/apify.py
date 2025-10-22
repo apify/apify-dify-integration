@@ -18,8 +18,8 @@ from tools.client import get_apify_client
 APIFY_AUTHORIZATION_URL = "https://console.apify.com/authorize/oauth"
 APIFY_TOKEN_URL = "https://console-backend.apify.com/oauth/apps/token"
 APIFY_SCOPES = ["profile", "full_api_access"]
-APIFY_REQUEST_TIMEOUT = 10  # seconds
-APIFY_DEFAULT_TOKEN_EXPIRY = 3600
+APIFY_REQUEST_TIMEOUT_SECS = 10
+APIFY_DEFAULT_TOKEN_EXPIRY_SECS = 3600
 
 
 class ApifyProvider(ToolProvider):
@@ -107,7 +107,7 @@ class ApifyProvider(ToolProvider):
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         try:
-            response = requests.post(APIFY_TOKEN_URL, data=payload, headers=headers, timeout=APIFY_REQUEST_TIMEOUT)
+            response = requests.post(APIFY_TOKEN_URL, data=payload, headers=headers, timeout=APIFY_REQUEST_TIMEOUT_SECS)
             response.raise_for_status()
             token_data = response.json()
 
@@ -129,7 +129,7 @@ class ApifyProvider(ToolProvider):
             if refresh_token:
                 credentials["refresh_token"] = refresh_token
 
-            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY)
+            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY_SECS)
             expires_at = int(time.time()) + expires_in
 
             return ToolOAuthCredentials(credentials=credentials, expires_at=expires_at)
@@ -161,7 +161,7 @@ class ApifyProvider(ToolProvider):
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         try:
-            response = requests.post(APIFY_TOKEN_URL, data=data, headers=headers, timeout=10)
+            response = requests.post(APIFY_TOKEN_URL, data=data, headers=headers, timeout=APIFY_REQUEST_TIMEOUT_SECS)
             response.raise_for_status()
 
             token_data = response.json()
@@ -180,7 +180,7 @@ class ApifyProvider(ToolProvider):
                 "refresh_token": refresh_token,  # Keep existing refresh token
             }
 
-            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY)
+            expires_in = token_data.get("expires_in", APIFY_DEFAULT_TOKEN_EXPIRY_SECS)
 
             new_refresh_token = token_data.get("refresh_token")
             if new_refresh_token:
