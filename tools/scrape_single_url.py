@@ -6,6 +6,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
+from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
 
 WEBSITE_CONTENT_CRAWLER_ID = "apify/website-content-crawler"
 
@@ -19,10 +20,7 @@ class ScrapeSingleUrl(Tool):
         Invokes the Apify Website Content Crawler for a single URL. Either waiting for it to finish or starting it
         and returning immediately
         """
-        url = tool_parameters.get("url")
-        if not url:
-            yield self.create_text_message("Error: URL is a required parameter.")
-            return
+        url = require_param(tool_parameters, "url", "URL is a required parameter.")
 
         crawler_type = tool_parameters.get("crawler_type", "playwright:adaptive")
 
@@ -51,8 +49,6 @@ class ScrapeSingleUrl(Tool):
             yield self.create_json_message(output_data)
 
         except ApifyApiError as e:
-            error_message = f"An Apify API error occurred: {e.message or str(e)}"
-            yield self.create_text_message(error_message)
+            raise_apify_error("scraping URL", e)
         except Exception as e:
-            error_message = f"An unexpected error occurred: {e}"
-            yield self.create_text_message(error_message)
+            raise_unexpected_error("scraping URL", e)

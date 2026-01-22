@@ -13,9 +13,9 @@ parameters:
     required: true
     form: llm
     label:
-      en_US: Task ID
+      en_US: Task
     human_description:
-      en_US: The unique ID of the Actor task you want to run.
+      en_US: Actor task identifier - ID or an alias in either owner/task-name or owner~task-name format.
     llm_description: The unique identifier for the Apify Actor task. This can be found in the Apify Console.
   - name: input_override
     type: string
@@ -23,9 +23,10 @@ parameters:
     form: llm
     label:
       en_US: Input Override
+    default: "{}"
     human_description:
-      en_US: Optional. A JSON object to override the Actor task's default input.
-    llm_description: Optional. A JSON formatted string that will be merged with the Actor task's default input. Any fields provided here will override the corresponding fields in the Actor task's pre-configured input.
+      en_US: Optional. A JSON object to override the Actor task's default input. If empty, an empty JSON object {} will be used.
+    llm_description: Optional. A JSON formatted string that will be merged with the Actor task's default input. Any fields provided here will override the corresponding fields in the Actor task's pre-configured input. If not provided, an empty JSON object {} will be used.
   - name: build
     type: string
     required: false

@@ -5,8 +5,10 @@ from typing import Any
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
+from utils.error_handling import ToolInvokeError
 
 from tools.client import get_apify_client
+from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
 
 
 class GetKeyValueStoreRecord(Tool):
@@ -18,21 +20,15 @@ class GetKeyValueStoreRecord(Tool):
         Retrieves a single record from a specified Apify key-value store.
         Handles different content types (JSON, text, binary).
         """
-        store_id = tool_parameters.get("storeId")
-        if not store_id:
-            yield self.create_text_message("Error: Store ID ('storeId') is a required parameter.")
-            return
+        store_id = require_param(tool_parameters, "storeId", "Store ID ('storeId') is a required parameter.")
 
-        record_key = tool_parameters.get("recordKey")
-        if not record_key:
-            yield self.create_text_message("Error: Record Key ('recordKey') is a required parameter.")
-            return
+        record_key = require_param(tool_parameters, "recordKey", "Record Key ('recordKey') is a required parameter.")
 
         try:
             client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)
             record = client.key_value_store(store_id).get_record(record_key)
             if not record:
-                raise Exception(f"Record with key '{record_key}' not found in store '{store_id}'.")
+                raise ToolInvokeError(f"Record with key '{record_key}' not found in store '{store_id}'.")
 
             record_value = record.get("value")
             content_type = record.get("contentType", "application/octet-stream")  # Default to binary if no content type
@@ -55,8 +51,6 @@ class GetKeyValueStoreRecord(Tool):
             yield self.create_json_message(output)
 
         except ApifyApiError as e:
-            error_message = f"An Apify API error occurred: {e.message or str(e)}"
-            yield self.create_text_message(error_message)
+            raise_apify_error("fetching store record", e)
         except Exception as e:
-            error_message = f"An unexpected error occurred: {e}"
-            yield self.create_text_message(error_message)
+            raise_unexpected_error("fetching store record", e)

@@ -18,21 +18,22 @@ parameters:
     type: string
     required: true
     label:
-      en_US: Actor ID
+      en_US: Actor
     human_description:
-      en_US: The unique ID of the Actor you want to run.
+      en_US: Actor identifier - ID or an alias in either owner/actor-name or owner~actor-name format.
     llm_description: The unique identifier for the Apify Actor. This can be found in the Apify Console (e.g., aYG0l9s7dbB7j3gbS).
     form: llm
   - name: input_body
     type: string
     label:
       en_US: Input
+    default: "{}"
     human_description:
-      en_US: A JSON object containing the input for the Actor.
+      en_US: JSON input for the Actor run, which you can find on the Actor's input page in Apify Console. If empty, the Actor's default input (if configured) will be fetched from the API and used automatically.
     llm_description: |
       A JSON formatted string representing the input for the Actor. The structure of this JSON must
       match the input schema defined by the Actor developer. For example, for a web scraper, this might be:
-      '{"startUrls": [{"url": "https://dify.ai"}]}'
+      '{"startUrls": [{"url": "https://dify.ai"}]}'.
     form: llm
   - name: build
     type: string

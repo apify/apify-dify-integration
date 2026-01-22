@@ -1,4 +1,3 @@
-import json
 from collections.abc import Generator
 from typing import Any
 
@@ -7,6 +6,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
+from utils.error_handling import parse_json_param, raise_apify_error, raise_unexpected_error, require_param
 
 
 class RunTask(Tool):
@@ -18,17 +18,10 @@ class RunTask(Tool):
         Invokes a pre-configured Apify actor task, either waiting for it to finish
         or starting it and returning immediately.
         """
-        task_id = tool_parameters.get("taskId")
-        if not task_id:
-            yield self.create_text_message("Error: Task ID ('taskId') is a required parameter.")
-            return
+        task_id = require_param(tool_parameters, "taskId", "Task ID ('taskId') is a required parameter.")
 
         input_override_str = tool_parameters.get("input_override", "{}")
-        try:
-            input_override = json.loads(input_override_str)
-        except json.JSONDecodeError:
-            yield self.create_text_message("Error: Invalid JSON format in Input Override.")
-            return
+        input_override = parse_json_param(input_override_str, "Invalid JSON format in Input Override.")
 
         wait_for_finish = tool_parameters.get("wait_for_finish", False)
         build = tool_parameters.get("build")
@@ -60,8 +53,6 @@ class RunTask(Tool):
             yield self.create_json_message(output_data)
 
         except ApifyApiError as e:
-            error_message = f"An Apify API error occurred: {e.message or str(e)}"
-            yield self.create_text_message(error_message)
+            raise_apify_error("running task", e)
         except Exception as e:
-            error_message = f"An unexpected error occurred: {e}"
-            yield self.create_text_message(error_message)
+            raise_unexpected_error("running task", e)

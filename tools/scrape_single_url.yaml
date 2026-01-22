@@ -41,9 +41,6 @@ parameters:
       - value: jsdom
         label:
           en_US: JSDOM (Raw HTTP with JS)
-      - value: playwright:chrome
-        label:
-          en_US: Chrome (Headless Browser) [DEPRECATED]
 extra:
   python:
     source: tools/scrape_single_url.py
