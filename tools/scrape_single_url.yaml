@@ -5,7 +5,7 @@ identity:
     en_US: Scrape Single URL
 description:
   human:
-    en_US: Scrapes a single web page and returns its content. Can run synchronously to return results directly, or asynchronously to return run details.
+    en_US: Scrape a single URL using the Apify Website Content Crawler Actor and get its content as markdown and HTML.
   llm: |
     This tool scrapes a single web page using the Apify Website Content Crawler. It requires a URL. The `wait_for_finish` parameter is critical: if `true` (the default), it waits for the scrape to complete and returns an array of the scraped data items. If `false`, it starts the scrape and immediately returns a JSON object with the Actor run's details.
 parameters:
@@ -16,7 +16,7 @@ parameters:
     label:
       en_US: URL to scrape
     human_description:
-      en_US: The full URL of the single page to be scraped.
+      en_US: URL to be scraped. Must start with http:// or https:// and be a valid URL.
     llm_description: The complete and valid URL of the web page to be scraped.
   - name: crawler_type
     type: select

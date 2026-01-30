@@ -13,7 +13,7 @@ parameters:
     required: true
     form: llm
     label:
-      en_US: Store ID
+      en_US: Key-Value Store ID
     human_description:
       en_US: The unique ID of the key-value store.
     llm_description: The unique identifier for the Apify key-value store.
@@ -22,9 +22,9 @@ parameters:
     required: true
     form: llm
     label:
-      en_US: Record Key
+      en_US: Key-Value Store Record Key
     human_description:
-      en_US: The key of the record to retrieve.
+      en_US: The key of the record to be retrieved.
     llm_description: The key of the record to fetch from the specified store.
 extra:
   python:
