@@ -26,7 +26,7 @@ def get_prefilled_input(actor_client: Any) -> dict[str, Any]:
 
         build_client = run_sync(actor_client.default_build())
         build = run_sync(build_client.get())
-        
+
         if not build:
             return {}
 
