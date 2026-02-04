@@ -1,3 +1,4 @@
+import mimetypes
 from collections.abc import Generator
 from typing import Any
 
@@ -14,43 +15,16 @@ def get_file_extension(content_type: str) -> str:
     """
     Returns file extension based on content type.
     """
-    extensions = {
-        "image/png": ".png",
-        "image/jpeg": ".jpg",
-        "application/pdf": ".pdf",
-        "application/zip": ".zip",
-        "text/html": ".html",
-        "text/csv": ".csv",
-        "application/json": ".json",
-        "text/plain": ".txt",
-    }
-    return extensions.get(content_type, "")
+    ext = mimetypes.guess_extension(content_type, strict=False)
+    return ext or ""
 
 
-def get_mime_type_from_extension(filename: str) -> str:
+def get_mime_type_from_extension(filename: str) -> str | None:
     """
     Infers MIME type from file extension.
     """
-    extension_to_mime = {
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".gif": "image/gif",
-        ".webp": "image/webp",
-        ".pdf": "application/pdf",
-        ".zip": "application/zip",
-        ".html": "text/html",
-        ".csv": "text/csv",
-        ".json": "application/json",
-        ".txt": "text/plain",
-    }
-
-    # Get extension from filename (case-insensitive)
-    for ext, mime in extension_to_mime.items():
-        if filename.lower().endswith(ext):
-            return mime
-
-    return None
+    mime_type, _ = mimetypes.guess_type(filename, strict=False)
+    return mime_type
 
 
 def is_binary_content_type(content_type: str) -> bool:
