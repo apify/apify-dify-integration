@@ -5,8 +5,8 @@ identity:
     en_US: Get Key-Value Store Record
 description:
   human:
-    en_US: Retrieves a single record from a specified Apify key-value store.
-  llm: This tool fetches a single record from an Apify key-value store using a store ID and a record key. It returns an object containing the records body and its content type.
+    en_US: Retrieves a single record from a specified Apify key-value store. Returns JSON/text as variables, or binary files as downloadable content.
+  llm: This tool fetches a single record from an Apify key-value store using a store ID and a record key. For JSON and text data, it returns the value as a variable. For binary files (images, PDFs, etc.), it returns the file as downloadable content with metadata including filename, content type, and size.
 parameters:
   - name: storeId
     type: string
@@ -26,6 +26,29 @@ parameters:
     human_description:
       en_US: The key of the record to be retrieved.
     llm_description: The key of the record to fetch from the specified store.
+output_schema:
+  properties:
+    result:
+      type: object
+      description: The retrieved key-value store record with metadata. Structure varies based on dataType.
+      properties:
+        key:
+          type: string
+          description: The key of the retrieved record.
+        dataType:
+          type: string
+          description: The type of data returned - 'json', 'file', or 'text'.
+        contentType:
+          type: string
+          description: The MIME type of the record (e.g., 'application/json', 'text/plain', 'image/png').
+        value:
+          description: The value of the record (for JSON and text types). Can be a string or object.
+        fileName:
+          type: string
+          description: The file name (only for file type). Includes the appropriate extension based on content type.
+        size:
+          type: number
+          description: The file size in bytes (only for file type).
 extra:
   python:
     source: tools/key_value_store.py

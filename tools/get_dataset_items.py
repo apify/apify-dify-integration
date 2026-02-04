@@ -31,9 +31,12 @@ class GetDatasetItems(Tool):
             }
             filtered_options = {k: v for k, v in list_options.items() if v is not None}
             dataset_items_list = dataset_client.list_items(**filtered_options).items
-            output_data = {"result": dataset_items_list}
 
-            yield self.create_json_message(output_data)
+            yield self.create_variable_message("result", {
+                "items": dataset_items_list,
+                "count": len(dataset_items_list),
+                "datasetId": dataset_id,
+            })
 
         except ApifyApiError as e:
             raise_apify_error("fetching dataset items", e)

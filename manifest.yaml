@@ -38,7 +38,7 @@ meta:
     language: python
     version: "3.12"
     entrypoint: main
-  minimum_dify_version: 1.7.1
+  minimum_dify_version: 1.11.4
 created_at: 2025-08-20T12:23:00.109189+02:00
 privacy: PRIVACY.md
 verified: false

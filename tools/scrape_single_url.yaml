@@ -41,6 +41,33 @@ parameters:
       - value: jsdom
         label:
           en_US: JSDOM (Raw HTTP with JS)
+output_schema:
+  properties:
+    result:
+      type: object
+      description: The scraped content from the URL.
+      properties:
+        url:
+          type: string
+          description: The URL that was scraped.
+        crawl:
+          type: object
+          description: Crawl information.
+        text:
+          type: string
+          description: The extracted text content from the page.
+        markdown:
+          type: string
+          description: The page content converted to markdown format.
+        html:
+          type: string
+          description: The raw HTML content of the page (if saveHtml was enabled).
+        screenshotUrl:
+          type: string
+          description: URL to the screenshot of the page (if saveScreenshots was enabled).
+        metadata:
+          type: object
+          description: Additional metadata about the scraped page.
 extra:
   python:
     source: tools/scrape_single_url.py

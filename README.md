@@ -100,6 +100,19 @@ To enable interactive debugging, follow these steps:
     python -m main
     ```
 
+### Local debugging with Docker
+
+To test the plugin against a local Dify instance, use [Docker Compose](https://docs.dify.ai/en/self-host/quick-start/docker-compose): clone Dify, start it with `docker compose up -d` from the `docker` directory, then complete the admin setup at `http://localhost/install`.
+
+Build the plugin package and upload it in Dify to test:
+
+```bash
+# From the plugin repo root
+dify plugin package . -o apify.difypkg
+```
+
+Then in your local Dify plugins page, upload the `apify.difypkg` local package file to install the plugin and test your changes.
+
 ## Usage Example: Running an Actor
 
 This section shows how to run an Apify actor inside a Dify workflow.  
