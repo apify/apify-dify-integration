@@ -5,7 +5,7 @@ identity:
     en_US: Run Actor task
 description:
   human:
-    en_US: Starts a pre-configured Apify Actor task. You can optionally override its default input.
+    en_US: Runs an Actor Task and return all associated details. You can optionally override the Actor’s input configuration by providing a custom body.
   llm: This tool executes a pre-configured Actor task on the Apify platform by its unique identifier (taskId). An Actor task already has a default input, but you can optionally provide a JSON object (input_override) to merge with or override the default settings. The `wait_for_finish` parameter controls the execution mode. The tool returns a JSON object containing the details of the Actor run.
 parameters:
   - name: taskId
@@ -13,19 +13,20 @@ parameters:
     required: true
     form: llm
     label:
-      en_US: Task ID
+      en_US: Task
     human_description:
-      en_US: The unique ID of the Actor task you want to run.
+      en_US: Actor task identifier - ID or an alias in either owner/task-name or owner~task-name format.
     llm_description: The unique identifier for the Apify Actor task. This can be found in the Apify Console.
   - name: input_override
     type: string
     required: false
     form: llm
     label:
-      en_US: Input Override
+      en_US: Input
+    default: "{}"
     human_description:
-      en_US: Optional. A JSON object to override the Actor task's default input.
-    llm_description: Optional. A JSON formatted string that will be merged with the Actor task's default input. Any fields provided here will override the corresponding fields in the Actor task's pre-configured input.
+      en_US: JSON input for the task run, which you can find on the task input page in Apify Console (https://console.apify.com). If empty, the run uses the input specified in the default run configuration.
+    llm_description: Optional. A JSON formatted string that will be merged with the Actor task's default input. Any fields provided here will override the corresponding fields in the Actor task's pre-configured input. If not provided, an empty JSON object {} will be used.
   - name: build
     type: string
     required: false
@@ -33,7 +34,7 @@ parameters:
     label:
       en_US: Build
     human_description:
-      en_US: The build tag or number to run (e.g., "latest" or "1.2.3").
+      en_US: Build to run. It can be either a build tag or build number. By default, the run uses the build specified in the default run configuration (typically `latest`).
     llm_description: Optional. A specific build tag or number for the Actor (e.g., "latest", "beta", "1.2.3"). Overrides the Actor task's default build.
   - name: wait_for_finish
     type: boolean
@@ -42,7 +43,7 @@ parameters:
     label:
       en_US: Wait for Finish
     human_description:
-      en_US: If checked, the tool will wait for the Actor run to complete before returning.
+      en_US: If enabled, the step waits for the task run to finish and returns the run’s dataset items as the step output.
     llm_description: A boolean (`true` or `false`). If `true`, the tool will wait for the run to reach a terminal state. If `false` (default), it returns immediately.
     default: false
   - name: timeout
@@ -50,18 +51,18 @@ parameters:
     required: false
     form: llm
     label:
-      en_US: Timeout (seconds)
+      en_US: Timeout
     human_description:
-      en_US: Maximum time in seconds the Actor is allowed to run.
+      en_US: Optional timeout for the run, in seconds. By default, the run uses a timeout specified in the default run configuration for the Actor task.
     llm_description: Optional. The maximum number of seconds the Actor run is allowed to execute. Overrides the Actor task's default timeout.
   - name: memory
     type: select
     required: false
     form: llm
     label:
-      en_US: Memory (MB)
+      en_US: Memory
     human_description:
-      en_US: The amount of memory in megabytes to allocate to the Actor run.
+      en_US: Memory limit for the run, in megabytes. The amount of memory can be set to one of the available options. By default, the run uses a memory limit specified in the default run configuration for the Actor task.
     llm_description: Optional. The amount of memory in megabytes to allocate for the run. Overrides the Actor task's default memory setting.
     default: 128
     options:
@@ -92,6 +93,24 @@ parameters:
       - value: 32768
         label:
           en_US: 32768 MB (32 GB)
+output_schema:
+  properties:
+    result:
+      type: object
+      description: The details of the Actor task run.
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the Actor run.
+        status:
+          type: string
+          description: The current status of the Actor run.
+        defaultDatasetId:
+          type: string
+          description: The ID of the default dataset associated with the Actor run.
+        defaultKeyValueStoreId:
+          type: string
+          description: The ID of the default key-value store associated with the Actor run.
 extra:
   python:
     source: tools/run_actor_task.py

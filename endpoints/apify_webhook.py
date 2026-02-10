@@ -1,6 +1,7 @@
 import json
 from typing import Any, Mapping, Dict
 from werkzeug import Request, Response
+from werkzeug.exceptions import BadRequest
 from dify_plugin import Endpoint
 from enum import Enum
 from http import HTTPStatus
@@ -18,8 +19,24 @@ class ApifyWebhookEndpoint(Endpoint):
         values: Mapping[str, Any],
         settings: Mapping[str, Any],
     ) -> Response:
-        request_body = r.get_json()
-        app_id = settings.get("app_selector").get("app_id")
+        try:
+            request_body = r.get_json()
+        except BadRequest:
+            return Response(
+                json.dumps({"error": "Invalid JSON body"}),
+                status=HTTPStatus.BAD_REQUEST,
+                mimetype="application/json",
+            )
+
+        if request_body is None:
+            return Response(
+                json.dumps({"error": "Missing JSON body"}),
+                status=HTTPStatus.BAD_REQUEST,
+                mimetype="application/json",
+            )
+
+        app_selector = settings.get("app_selector") if isinstance(settings, Mapping) else None
+        app_id = (app_selector or {}).get("app_id") if isinstance(app_selector, Mapping) else None
 
         if not app_id or not isinstance(app_id, str):
             return Response(
@@ -69,7 +86,7 @@ class ApifyWebhookEndpoint(Endpoint):
                 )
 
                 return Response(
-                    response=dify_resp,
+                    response=dify_resp if isinstance(dify_resp, str) else json.dumps(dify_resp),
                     status=HTTPStatus.OK,
                     content_type="application/json",
                 )

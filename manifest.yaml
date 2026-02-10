@@ -3,15 +3,15 @@ type: plugin
 author: apify
 name: apify-integration
 label:
-  en_US: apify-integration
-  ja_JP: apify-integration
-  zh_Hans: apify-integration
-  pt_BR: apify-integration
+  en_US: Apify
+  ja_JP: Apify
+  zh_Hans: Apify
+  pt_BR: Apify
 description:
-  en_US: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
-  ja_JP: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
-  zh_Hans: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
-  pt_BR: A plugin to run Apify actors and tasks, and manage Apify resources directly from Dify.
+  en_US: Apify is the largest marketplace of tools for web scraping, automation, and data for AI.
+  ja_JP: Apify is the largest marketplace of tools for web scraping, automation, and data for AI.
+  zh_Hans: Apify is the largest marketplace of tools for web scraping, automation, and data for AI.
+  pt_BR: Apify is the largest marketplace of tools for web scraping, automation, and data for AI.
 icon: apify.svg
 icon_dark: apify.svg
 plugin_tag:

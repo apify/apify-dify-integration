@@ -6,6 +6,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
+from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
 
 
 class GetDatasetItems(Tool):
@@ -16,10 +17,7 @@ class GetDatasetItems(Tool):
         """
         Retrieves items from a specified Apify dataset, with optional pagination.
         """
-        dataset_id = tool_parameters.get("datasetId")
-        if not dataset_id:
-            yield self.create_text_message("Error: Dataset ID ('datasetId') is a required parameter.")
-            return
+        dataset_id = require_param(tool_parameters, "datasetId", "Dataset ID ('datasetId') is a required parameter.")
 
         limit = tool_parameters.get("limit")
         offset = tool_parameters.get("offset")
@@ -38,8 +36,6 @@ class GetDatasetItems(Tool):
             yield self.create_json_message(output_data)
 
         except ApifyApiError as e:
-            error_message = f"An Apify API error occurred: {e.message or str(e)}"
-            yield self.create_text_message(error_message)
+            raise_apify_error("fetching dataset items", e)
         except Exception as e:
-            error_message = f"An unexpected error occurred: {e}"
-            yield self.create_text_message(error_message)
+            raise_unexpected_error("fetching dataset items", e)

@@ -135,7 +135,18 @@ class ApifyProvider(ToolProvider):
             return ToolOAuthCredentials(credentials=credentials, expires_at=expires_at)
 
         except requests.RequestException as e:
-            raise ToolProviderOAuthError(f"Network error during token exchange: {str(e)}")
+            # Include response details when available (e.g., 400 Bad Request)
+            response = getattr(e, "response", None)
+            if response is not None:
+                try:
+                    response_body = response.json()
+                except ValueError:
+                    response_body = response.text
+                msg = (
+                    f"Token exchange failed with HTTP {response.status_code}: {response_body}"
+                )
+                raise ToolProviderOAuthError(msg) from e
+            raise ToolProviderOAuthError(f"Network error during token exchange: {str(e)}") from e
         except Exception as e:
             raise ToolProviderOAuthError(f"Failed to exchange authorization code: {str(e)}")
 
@@ -191,6 +202,17 @@ class ApifyProvider(ToolProvider):
             return ToolOAuthCredentials(credentials=new_credentials, expires_at=expires_at)
 
         except requests.RequestException as e:
-            raise ToolProviderOAuthError(f"Network error during token refresh: {str(e)}")
+            # Include response details when available (e.g., 400 Bad Request)
+            response = getattr(e, "response", None)
+            if response is not None:
+                try:
+                    response_body = response.json()
+                except ValueError:
+                    response_body = response.text
+                msg = (
+                    f"Token refresh failed with HTTP {response.status_code}: {response_body}"
+                )
+                raise ToolProviderOAuthError(msg) from e
+            raise ToolProviderOAuthError(f"Network error during token refresh: {str(e)}") from e
         except Exception as e:
             raise ToolProviderOAuthError(f"Failed to refresh credentials: {str(e)}")

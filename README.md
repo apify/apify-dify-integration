@@ -72,15 +72,10 @@ It is highly recommended to use a virtual environment to manage project dependen
 uv venv
 
 # Activate it (on macOS/Linux)
+source .venv/bin/activate
+
+# Install dependencies
 uv pip install -e ".[dev]"
-```
-
-**8. Install Dependencies**
-
-This project uses a `requirements.txt` file to manage its dependencies.
-
-```bash
-pip install -r requirements.txt
 ```
 
 And we are pretty much ready!

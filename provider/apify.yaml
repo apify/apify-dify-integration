@@ -4,7 +4,7 @@ identity:
   label:
     en_US: 'Apify'
   description:
-    en_US: 'A plugin to run Apify actors and tasks.'
+    en_US: 'Apify is the largest marketplace of tools for web scraping, automation, and data for AI.'
   icon: 'apify.svg'
 
 oauth_schema:
