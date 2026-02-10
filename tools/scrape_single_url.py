@@ -43,10 +43,19 @@ class ScrapeSingleUrl(Tool):
             actor_result = actor_client.call(run_input=actor_input)
             dataset_id = actor_result["defaultDatasetId"]
             dataset_client = client.dataset(dataset_id)
-            scraped_item = dataset_client.list_items().items[0]
-            output_data = {"result": scraped_item}
+            items = dataset_client.list_items().items
 
-            yield self.create_json_message(output_data)
+            if not items:
+                from utils.error_handling import ToolInvokeError
+                raise ToolInvokeError(
+                    f"Scraping completed but no data was returned for URL: {url}. "
+                    "The page may have failed to load, the URL may be invalid, "
+                    "or the content could not be extracted."
+                )
+
+            scraped_item = items[0]
+
+            yield self.create_variable_message("result", scraped_item)
 
         except ApifyApiError as e:
             raise_apify_error("scraping URL", e)

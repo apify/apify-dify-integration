@@ -39,8 +39,6 @@ class RunTask(Tool):
             }
             filtered_options = {k: v for k, v in task_options.items() if v is not None}
 
-            run_details = None
-
             if wait_for_finish:
                 # Synchronous Execution: starts the task and waits for it to finish.
                 run_details = task_client.call(task_input=input_override, **filtered_options)
@@ -48,9 +46,7 @@ class RunTask(Tool):
                 # Asynchronous Execution: starts the task and returns immediately.
                 run_details = task_client.start(task_input=input_override, **filtered_options)
 
-            output_data = {"result": run_details}
-
-            yield self.create_json_message(output_data)
+            yield self.create_variable_message("result", run_details)
 
         except ApifyApiError as e:
             raise_apify_error("running task", e)

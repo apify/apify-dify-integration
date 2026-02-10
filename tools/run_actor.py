@@ -85,18 +85,13 @@ class RunActor(Tool):
             }
             filtered_options = {k: v for k, v in run_options.items() if v is not None}
 
-            run_details = None
-
             if wait_for_finish:
                 # Synchronous Execution
                 run_details = actor_client.call(run_input=run_input, **filtered_options)
             else:
                 # Asynchronous Execution
                 run_details = actor_client.start(run_input=run_input, **filtered_options)
-
-            output_data = {"result": run_details}
-
-            yield self.create_json_message(output_data)
+            yield self.create_variable_message("result", run_details)
 
         except ApifyApiError as e:
             raise_apify_error("running actor", e)

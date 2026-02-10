@@ -35,6 +35,21 @@ parameters:
     human_description:
       en_US: Number of items that should be skipped at the start. The default value is `0`.
     llm_description: Optional. Number of items that should be skipped at the start. The default value is `0`.
+output_schema:
+  properties:
+    result:
+      type: object
+      description: Dataset information including items, count, and dataset ID.
+      properties:
+        items:
+          type: array
+          description: Array of items from the dataset.
+        count:
+          type: number
+          description: Number of items in the dataset.
+        datasetId:
+          type: string
+          description: The ID of the dataset.
 extra:
   python:
     source: tools/get_dataset_items.py
