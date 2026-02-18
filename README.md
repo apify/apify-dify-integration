@@ -92,8 +92,6 @@ To enable interactive debugging, follow these steps:
    - Click the **bug icon** in the upper right corner to generate a debugging key.  
    - Replace the default value of `REMOTE_INSTALL_KEY` in your `.env` file with this key.
   
-     <img width="266" height="223" alt="image" src="https://github.com/user-attachments/assets/e592712d-a741-45c7-96ef-66231e201262" />
-
 3. **Run the project**  
    Start the project in debug mode with:  
     ```bash
@@ -116,62 +114,46 @@ Then in your local Dify plugins page, upload the `apify.difypkg` local package f
 ## Usage Example: Running an Actor
 
 This section shows how to run an Apify actor inside a Dify workflow.  
-We will use the **Google Maps Extractor** actor (`2Mdma1N6Fd0y3QEjR`) as an example.
+We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) as an example.
 
 ### Step 1: Create a New Workflow
 1. Open your **Dify project**.
 2. Create a new **Workflow** from Blank.
+3. Click on the **+** button followed by **Tools -> Apify -> Run Actor**.
 
-<img width="978" height="435" alt="image" src="https://github.com/user-attachments/assets/d913230f-11bf-42e3-a68a-bb80a549daf3" />
-<img width="704" height="546" alt="image" src="https://github.com/user-attachments/assets/ffcd6bf6-4831-48b7-a630-2ce38c57803f" />
+    ![Dify Workflow Start](docs/images/dify-workflow-start.png)
 
-4. Drag and drop the **Run Actor (Apify Plugin)** block onto the canvas.
-
-<img width="891" height="469" alt="image" src="https://github.com/user-attachments/assets/a8b0c545-5e2f-4845-ab72-36f230134906" />
-
-### Step 2: Configure the Run Actor Block
-1. Select the **Run Actor** block.  
-2. Fill in the following settings:
-   - **Actor ID**:  
-     ```
-     2Mdma1N6Fd0y3QEjR
-     ```
-   - **Example Input Body** (JSON):  
+4. Fill in the following settings:
+   - **Actor ID**: `compass/crawler-google-places`
+   - **Input**:  
      ```json
      {
-       "categoryFilterWords": ["abbey"],
-       "countryCode": "af",
        "language": "en",
        "locationQuery": "New York, USA",
-       "maxCrawledPlacesPerSearch": 1,
+       "maxCrawledPlacesPerSearch": 50,
        "placeMinimumStars": "two",
-       "searchMatching": "all",
        "searchStringsArray": ["restaurant"],
        "skipClosedPlaces": false,
-       "website": "allPlaces"
      }
      ```
    - **Wait for Finish**:  
-   Set to `false` (the workflow will return immediately without waiting for the actor to complete).  
+    Set to `false` if you want the workflow to return immediately after starting or to `true` if you want to wait for the run to reach a terminal state (e.g SUCCEEDED, FAILED).
 
-<img width="1288" height="710" alt="image" src="https://github.com/user-attachments/assets/585f6eec-d06d-4e65-8da4-334abfa2eff7" />
+    ![Dify Actor Run](docs/images/dify-configure-actor-run.png)
 
 ### Step 3: Connect Workflow Blocks
-1. Put **End** block in a workflow.
+1. Select **Output** block in a workflow.
+2. Connect the **Run Actor** block to the **Output** block.  
+3. Create a variable to store results:
+    - Open the output of the **Output** block.  
+    - Add a variable, e.g., `result`, that maps to the actor’s response.  
 
-<img width="1013" height="229" alt="image" src="https://github.com/user-attachments/assets/ad0cf992-50ae-4ffb-953e-d16edf445a56" />
-
-2. Connect the **Run Actor** block to the **End** block.  
-3. Create a variable to store results:  
-   - Open the output of the **End** block.  
-   - Add a variable, e.g., `result`, that maps to the actor’s response.  
-
-<img width="931" height="401" alt="image" src="https://github.com/user-attachments/assets/c6ca7068-d980-4f92-8d38-e1374f008eac" />
+    ![Dify Actor Run](docs/images/dify-configure-end-node.png)
 
 ### Step 4: Run the Workflow
 1. Click the **Run** button.  
-2. Dify will trigger the Apify actor `2Mdma1N6Fd0y3QEjR`.  
-3. Since `wait_for_finish = false`, the workflow will immediately return with the run details (including the run ID).  
+2. Dify will trigger the Apify actor.  
+3. Run details (including run ID) are returned immediately or after completion, depending on `Wait for Finish` parameter.
 4. You can check results in [Apify Console Runs Page](https://console.apify.com/actors/runs).
 
 ## Support

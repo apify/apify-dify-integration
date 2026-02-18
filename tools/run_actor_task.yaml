@@ -43,7 +43,7 @@ parameters:
     label:
       en_US: Wait for Finish
     human_description:
-      en_US: If enabled, the step waits for the task run to finish and returns the run’s dataset items as the step output.
+      en_US: If enabled, the step waits for the task run to finish before returning run details (e.g. run ID, status, defaultDatasetId). If disabled, it returns run details immediately after starting the run.
     llm_description: A boolean (`true` or `false`). If `true`, the tool will wait for the run to reach a terminal state. If `false` (default), it returns immediately.
     default: false
   - name: timeout
