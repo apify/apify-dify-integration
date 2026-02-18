@@ -6,7 +6,12 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
-from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
+from utils.error_handling import (
+    raise_apify_error,
+    raise_unexpected_error,
+    require_param,
+    validate_number,
+)
 
 
 class GetDatasetItems(Tool):
@@ -19,8 +24,16 @@ class GetDatasetItems(Tool):
         """
         dataset_id = require_param(tool_parameters, "datasetId", "Dataset ID ('datasetId') is a required parameter.")
 
-        limit = tool_parameters.get("limit")
-        offset = tool_parameters.get("offset")
+        limit = validate_number(
+            tool_parameters.get("limit"),
+            min_val=1,
+            param_name="limit",
+        )
+        offset = validate_number(
+            tool_parameters.get("offset"),
+            min_val=0,
+            param_name="offset",
+        )
 
         try:
             client = get_apify_client(self.runtime.credentials, self.runtime.credential_type)

@@ -19,6 +19,15 @@ def get_file_extension(content_type: str) -> str:
     return ext or ""
 
 
+def sanitize_filename(key: str) -> str:
+    """
+    Sanitizes a record key for use as a file name.
+    """
+    if not key:
+        return key
+    return key.strip().replace("\n", "").replace("\r", "")
+
+
 def get_mime_type_from_extension(filename: str) -> str | None:
     """
     Infers MIME type from file extension.
@@ -86,7 +95,12 @@ class GetKeyValueStoreRecord(Tool):
             is_binary = is_binary_content_type(content_type)
             if is_binary and isinstance(record_value, bytes):
                 file_extension = get_file_extension(content_type)
-                file_name = record_key + file_extension
+                base_name = sanitize_filename(record_key)
+                # Avoid duplicate extension if name already ends with the extension
+                if file_extension and base_name.lower().endswith(file_extension.lower()):
+                    file_name = base_name
+                else:
+                    file_name = base_name + file_extension if file_extension else base_name
 
                 blob_meta = {
                     "mime_type": content_type,

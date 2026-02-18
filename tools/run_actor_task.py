@@ -6,7 +6,14 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
-from utils.error_handling import parse_json_param, raise_apify_error, raise_unexpected_error, require_param
+from utils.error_handling import (
+    parse_json_param,
+    raise_apify_error,
+    raise_if_run_failed,
+    raise_unexpected_error,
+    require_param,
+    validate_number,
+)
 
 
 class RunTask(Tool):
@@ -25,7 +32,11 @@ class RunTask(Tool):
 
         wait_for_finish = tool_parameters.get("wait_for_finish", False)
         build = tool_parameters.get("build")
-        timeout_secs = tool_parameters.get("timeout")
+        timeout_secs = validate_number(
+            tool_parameters.get("timeout"),
+            min_val=0,
+            param_name="timeout",
+        )
         memory_mb = tool_parameters.get("memory")
 
         try:
@@ -42,6 +53,7 @@ class RunTask(Tool):
             if wait_for_finish:
                 # Synchronous Execution: starts the task and waits for it to finish.
                 run_details = task_client.call(task_input=input_override, **filtered_options)
+                raise_if_run_failed(run_details, context="Task run")
             else:
                 # Asynchronous Execution: starts the task and returns immediately.
                 run_details = task_client.start(task_input=input_override, **filtered_options)
