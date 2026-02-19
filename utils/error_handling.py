@@ -1,4 +1,5 @@
 import json
+import math
 from urllib.parse import urlparse
 from typing import Any
 
@@ -23,11 +24,16 @@ def validate_number(
     """
     Validate a numeric parameter. Returns None if value is None (for optional params).
     Raises ToolParameterValidationError if value is not a number or is outside min/max.
+    Rejects booleans and non-finite floats (NaN, inf).
     """
     if value is None:
         return None
+    if isinstance(value, bool):
+        raise ToolParameterValidationError(f"{param_name} must be a number.")
     if not isinstance(value, (int, float)):
         raise ToolParameterValidationError(f"{param_name} must be a number.")
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ToolParameterValidationError(f"{param_name} must be a finite number.")
     if min_val is not None and value < min_val:
         raise ToolParameterValidationError(f"{param_name} must be at least {min_val}.")
     if max_val is not None and value > max_val:

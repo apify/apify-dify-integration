@@ -21,7 +21,7 @@ def get_file_extension(content_type: str) -> str:
 
 def sanitize_filename(key: str) -> str:
     """
-    Sanitizes a record key for use as a file name.
+    Strips whitespace and removes newline characters so the key is safe as a file name.
     """
     if not key:
         return key

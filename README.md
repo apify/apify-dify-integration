@@ -133,7 +133,7 @@ We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) 
        "maxCrawledPlacesPerSearch": 50,
        "placeMinimumStars": "two",
        "searchStringsArray": ["restaurant"],
-       "skipClosedPlaces": false,
+       "skipClosedPlaces": false
      }
      ```
    - **Wait for Finish**:  
