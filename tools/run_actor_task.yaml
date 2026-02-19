@@ -43,13 +43,14 @@ parameters:
     label:
       en_US: Wait for Finish
     human_description:
-      en_US: If enabled, the step waits for the task run to finish and returns the run’s dataset items as the step output.
+      en_US: If enabled, the step waits for the task run to finish before returning run details (e.g. run ID, status, defaultDatasetId). If disabled, it returns run details immediately after starting the run.
     llm_description: A boolean (`true` or `false`). If `true`, the tool will wait for the run to reach a terminal state. If `false` (default), it returns immediately.
     default: false
   - name: timeout
     type: number
     required: false
     form: llm
+    min: 0
     label:
       en_US: Timeout
     human_description:
@@ -64,7 +65,6 @@ parameters:
     human_description:
       en_US: Memory limit for the run, in megabytes. The amount of memory can be set to one of the available options. By default, the run uses a memory limit specified in the default run configuration for the Actor task.
     llm_description: Optional. The amount of memory in megabytes to allocate for the run. Overrides the Actor task's default memory setting.
-    default: 128
     options:
       - value: 128
         label:

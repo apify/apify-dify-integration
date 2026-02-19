@@ -21,6 +21,7 @@ parameters:
     type: number
     required: false
     form: llm
+    min: 1
     label:
       en_US: Limit
     human_description:
@@ -30,6 +31,7 @@ parameters:
     type: number
     required: false
     form: llm
+    min: 0
     label:
       en_US: Offset
     human_description:

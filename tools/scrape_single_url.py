@@ -6,7 +6,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
-from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
+from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param, validate_url
 
 WEBSITE_CONTENT_CRAWLER_ID = "apify/website-content-crawler"
 
@@ -21,6 +21,7 @@ class ScrapeSingleUrl(Tool):
         and returning immediately
         """
         url = require_param(tool_parameters, "url", "URL is a required parameter.")
+        url = validate_url(url)
 
         crawler_type = tool_parameters.get("crawler_type", "playwright:adaptive")
 
