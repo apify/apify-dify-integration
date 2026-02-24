@@ -44,7 +44,7 @@ def validate_number(
 def validate_url(url: str, param_name: str = "url") -> str:
     """
     Validates that the value is a well-formed HTTP/HTTPS URL (scheme, host present, host not
-    starting with a dot). Raises ToolParameterValidationError if invalid.
+    starting with a dot, path without '..' segments). Raises ToolParameterValidationError if invalid.
     """
     if url is None or not isinstance(url, str):
         raise ToolParameterValidationError(f"{param_name} must be a non-empty string.")
@@ -64,6 +64,13 @@ def validate_url(url: str, param_name: str = "url") -> str:
         raise ToolParameterValidationError(
             f"{param_name} is not a valid URL (host must not start with a dot)."
         )
+    
+    for segment in parsed.path.split("/"):
+        if segment.startswith(".."):
+            raise ToolParameterValidationError(
+                f"{param_name} is not a valid URL (path segments must not start with '..')."
+            )
+            
     return url
 
 
