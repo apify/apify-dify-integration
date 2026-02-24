@@ -25,8 +25,8 @@ parameters:
       en_US: Input
     default: "{}"
     human_description:
-      en_US: JSON input for the task run, which you can find on the task input page in Apify Console (https://console.apify.com). If empty, the run uses the input specified in the default run configuration.
-    llm_description: Optional. A JSON formatted string that will be merged with the Actor task's default input. Any fields provided here will override the corresponding fields in the Actor task's pre-configured input. If not provided, an empty JSON object {} will be used.
+      en_US: A JSON object to override the task input. Only the fields you provide are overridden; the rest stay as in the task's default configuration. Use an empty object {} if you don't want to override anything. See the task input page in Apify Console (https://console.apify.com) for the available fields.
+    llm_description: Optional. A JSON object that overrides the task's default input. Only the fields you provide are overridden; all other fields remain unchanged. Use {} if you don't want to override any fields.
   - name: build
     type: string
     required: false

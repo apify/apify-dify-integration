@@ -121,7 +121,10 @@ We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) 
 2. Create a new **Workflow** from Blank.
 3. Click on the **+** button followed by **Tools -> Apify -> Run Actor**.
 
-    ![Dify Workflow Start](docs/images/dify-workflow-start.png)
+<img 
+  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-workflow-start.png" 
+  alt="Start Dify Workflow"
+/>
 
 4. Fill in the following settings:
    - **Actor ID**: `compass/crawler-google-places`
@@ -139,7 +142,10 @@ We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) 
    - **Wait for Finish**:  
     Set to `false` if you want the workflow to return immediately after starting or to `true` if you want to wait for the run to reach a terminal state (e.g SUCCEEDED, FAILED).
 
-    ![Dify Actor Run](docs/images/dify-configure-actor-run.png)
+<img 
+  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-actor-run.png" 
+  alt="Configure Actor Run" 
+/>
 
 ### Step 3: Connect Workflow Blocks
 1. Select **Output** block in a workflow.
@@ -148,7 +154,10 @@ We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) 
     - Open the output of the **Output** block.  
     - Add a variable, e.g., `result`, that maps to the actor’s response.  
 
-    ![Dify Actor Run](docs/images/dify-configure-end-node.png)
+<img 
+  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-end-node.png" 
+  alt="Configure End Node" 
+/>
 
 ### Step 4: Run the Workflow
 1. Click the **Run** button.  
