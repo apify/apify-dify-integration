@@ -64,13 +64,13 @@ def validate_url(url: str, param_name: str = "url") -> str:
         raise ToolParameterValidationError(
             f"{param_name} is not a valid URL (host must not start with a dot)."
         )
-    
+
     for segment in parsed.path.split("/"):
         if segment.startswith(".."):
             raise ToolParameterValidationError(
                 f"{param_name} is not a valid URL (path segments must not start with '..')."
             )
-            
+
     return url
 
 
