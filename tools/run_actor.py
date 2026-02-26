@@ -9,7 +9,6 @@ from tools.client import get_apify_client
 from utils.error_handling import (
     parse_json_param,
     raise_apify_error,
-    raise_if_run_failed,
     raise_unexpected_error,
     require_param,
     validate_number,
@@ -99,7 +98,6 @@ class RunActor(Tool):
             if wait_for_finish:
                 # Synchronous Execution
                 run_details = actor_client.call(run_input=run_input, **filtered_options)
-                raise_if_run_failed(run_details, context="Actor run")
             else:
                 # Asynchronous Execution
                 run_details = actor_client.start(run_input=run_input, **filtered_options)

@@ -9,7 +9,6 @@ from tools.client import get_apify_client
 from utils.error_handling import (
     parse_json_param,
     raise_apify_error,
-    raise_if_run_failed,
     raise_unexpected_error,
     require_param,
     validate_number,
@@ -53,7 +52,6 @@ class RunTask(Tool):
             if wait_for_finish:
                 # Synchronous Execution: starts the task and waits for it to finish.
                 run_details = task_client.call(task_input=input_override, **filtered_options)
-                raise_if_run_failed(run_details, context="Task run")
             else:
                 # Asynchronous Execution: starts the task and returns immediately.
                 run_details = task_client.start(task_input=input_override, **filtered_options)

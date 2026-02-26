@@ -6,6 +6,9 @@ identity:
   description:
     en_US: 'Apify is the largest marketplace of tools for web scraping, automation, and data for AI.'
   icon: 'apify.svg'
+  tags:
+    - utilities
+    - productivity
 
 oauth_schema:
   client_schema:

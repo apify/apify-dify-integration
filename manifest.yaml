@@ -17,9 +17,13 @@ icon_dark: apify.svg
 plugin_tag:
   - "tools"
   - "automation"
+  - "utilities"
+  - "productivity"
 resource:
   memory: 268435456
   permission:
+    tool:
+      enabled: true
     endpoint:
       enabled: true
     app:

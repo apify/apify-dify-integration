@@ -92,32 +92,6 @@ def parse_json_param(raw_value: str | None, error_message: str) -> Any:
         raise ToolParameterValidationError(error_message) from exc
 
 
-APIFY_RUN_FAILED_STATUSES = ("FAILED", "TIMED-OUT", "ABORTED")
-
-
-def raise_if_run_failed(run_details: dict[str, Any], context: str = "Actor run") -> None:
-    """
-    If the run finished in a failed terminal state, raise ToolInvokeError so the tool
-    is reported as failed. Only call this when wait_for_finish was True.
-    """
-    status = run_details.get("status")
-    status_upper = str(status).upper() if status else ""
-    if not status or status_upper not in APIFY_RUN_FAILED_STATUSES:
-        return
-    run_id = run_details.get("id", "")
-    run_id_suffix = f" (run ID: {run_id})" if run_id else ""
-    if status_upper == "ABORTED":
-        message = f"{context} was aborted{run_id_suffix}. Check Apify Console for details."
-    elif status_upper == "TIMED-OUT":
-        message = f"{context} timed out{run_id_suffix}. Check Apify Console for details."
-    else:
-        message = (
-            f"{context} finished with status {status}{run_id_suffix}. "
-            "Check the run in Apify Console for details."
-        )
-    raise ToolInvokeError(message)
-
-
 def raise_apify_error(action: str, exc: ApifyApiError) -> None:
     message = f"Apify API error while {action}: {exc.message or str(exc)}"
     raise ToolInvokeError(message) from exc
