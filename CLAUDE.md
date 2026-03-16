@@ -71,7 +71,7 @@ python main.py
 - **Python style**: Ruff formatter, line length 120, target Python 3.12
 - **Commit format**: conventional commits (`fix:`, `ci:`, `feat:`, etc.)
 - **Branching**: feature branches → PR to `main`
-- **Versioning**: bump `manifest.yaml` version, then tag with `v<version>` to trigger release
+- **Versioning**: bump `manifest.yaml` version → commit to `main` → create a GitHub Release with tag `v<version>` → CI packages and attaches `apify.difypkg` to the release → download the artifact and submit a PR to [langgenius/dify-plugins](https://github.com/langgenius/dify-plugins) to publish to the Dify marketplace
 
 ## Key Notes for AI Assistants
 
