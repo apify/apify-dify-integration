@@ -165,6 +165,43 @@ We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) 
 3. Run details (including run ID) are returned immediately or after completion, depending on `Wait for Finish` parameter.
 4. You can check results in [Apify Console Runs Page](https://console.apify.com/actors/runs).
 
+## Publishing a New Version to the Dify Marketplace
+
+Follow these steps when you want to release an updated version of the plugin.
+
+**1. Update the version number**
+
+In `manifest.yaml`, bump the `version` field following [semantic versioning](https://semver.org/):
+
+```yaml
+version: "0.0.2"  # was 0.0.1
+```
+
+Commit and push the change to `main`.
+
+**2. Create a GitHub Release**
+
+1. Go to the repository on GitHub → **Releases** → **Draft a new release**.
+2. Click **Choose a tag** → type the new version (e.g. `v0.0.2`) → select **Create new tag: v0.0.2 on publish**.
+3. Set the release title (e.g. `v0.0.2`).
+4. Click **Publish release**.
+
+This triggers the release workflow, which lints the code, packages the plugin, and attaches `apify.difypkg` to the release assets.
+
+**3. Download the `.difypkg` file**
+
+Once the workflow finishes (~1–2 min), go to the release page and download `apify.difypkg` from the **Assets** section. Rename it to include the version, e.g. `apify-0.0.2.difypkg`.
+
+**4. Submit a PR to the Dify plugins repository**
+
+1. Go to your fork of [langgenius/dify-plugins](https://github.com/langgenius/dify-plugins).
+2. Navigate to `apify/apify-integration/`.
+3. Upload `apify-0.0.2.difypkg` (keep previous version files — multiple versions can coexist).
+4. Open a Pull Request to `langgenius/dify-plugins:main`.
+5. In the PR description, select **Version update** as the submission type and briefly describe what changed.
+
+After the PR is merged, the new version appears automatically on the Dify marketplace.
+
 ## Support
-- For Apify documentation, visit [docs.apify.com](https://docs.apify.com).  
-- For Dify plugin development, check [Dify Plugin Docs](https://docs.dify.ai/plugin-dev-en/).  
+- For Apify documentation, visit [docs.apify.com](https://docs.apify.com).
+- For Dify plugin development, check [Dify Plugin Docs](https://docs.dify.ai/plugin-dev-en/).
