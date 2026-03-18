@@ -202,6 +202,14 @@ Once the workflow finishes (~1–2 min), go to the release page and download `ap
 
 After the PR is merged, the new version appears automatically on the Dify marketplace.
 
+## Apify OAuth
+
+The Apify plugin uses OAuth for authentication.
+
+**Dify Cloud**: OAuth works out of the box — no additional setup is required.
+
+**Self-hosted Dify**: OAuth requires a dedicated OAuth app configured for your environment. To request one, contact the Apify integrations team at [integrations@apify.com](mailto:integrations@apify.com) with your self-hosted Dify instance URL.
+
 ## Support
 - For Apify documentation, visit [docs.apify.com](https://docs.apify.com).
 - For Dify plugin development, check [Dify Plugin Docs](https://docs.dify.ai/plugin-dev-en/).
