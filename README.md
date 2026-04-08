@@ -119,7 +119,7 @@ This example shows how to extract restaurant data from Google Maps using Apify's
 1. Open the Dify project and create a new **Workflow** from blank.
 2. Click **+** → **Tools** → **Apify** → **Run Actor**.
 
-![Start Dify Workflow](https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-workflow-start.png)
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-workflow-start.png" alt="Start Dify Workflow" />
 
 ## Step 2: Configure the Run Actor node
 
@@ -139,14 +139,14 @@ This example shows how to extract restaurant data from Google Maps using Apify's
 
 1. Set **Wait for Finish** to `false` to return immediately after starting the run, or `true` to wait until the run reaches a terminal state (e.g. SUCCEEDED, FAILED).
 
-![Configure Actor Run](https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-actor-run.png)
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-actor-run.png" alt="Configure Actor Run" />
 
 ## Step 3: Connect and configure the output
 
 1. Add an **Output** node and connect the **Run Actor** node to it.
 2. In the Output node, add a variable (e.g. `result`) and map it to the Run Actor response.
 
-![Configure End Node](https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-end-node.png)
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-end-node.png" alt="Configure End Node" />
 
 ## Step 4: Run
 
