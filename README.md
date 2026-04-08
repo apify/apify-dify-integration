@@ -1,207 +1,192 @@
-# Apify Integration for Dify
+# Overview
 
-This repository contains a plugin for the [Dify.ai](https://dify.ai/) platform, enabling seamless integration with the [Apify](https://apify.com/) web scraping and automation platform.
+Apify brings **structured web data from 20,000+ ready-made web tools** into Dify workflows. Instead of writing custom crawlers or parsing raw HTML, pick a purpose-built Actor for Google Maps, LinkedIn, Amazon, news sites, or any other web source and get clean, structured results ready for LLM processing.
 
-## Features
-- **Run Actor** – Start any Apify actor by its unique `actorId` with custom input.  
-- **Run Task** – Execute predefined Apify tasks with one click.  
-- **Scrape Single URL** – Quickly scrape data from a single web page without configuring a full crawl.  
-- **Get Dataset Items** – Retrieve results stored in an Apify dataset.  
-- **Get Key-Value Store Record** – Fetch a record from an Apify key-value store.  
-- **Actor Run Finished Trigger** – Trigger downstream actions in Dify when an Apify actor or task run finishes.  
-- **Flexible Execution Modes** – Choose between asynchronous (fast return) and synchronous (wait for results) execution.
-- **Finished Trigger (Webhook)** – Trigger Dify workflows automatically upon the completion of an Apify Actor or task.
+Generic web crawlers return basic markdown. Apify returns structured JSON: business names, ratings, prices, reviews, contact details - whatever the use case demands. That data flows directly into Dify workflows, chatflows, and AI agents.
+
+---
+
+# Why Apify
+
+Most web data tools do one thing: crawl pages and return raw text. That works for simple use cases, but AI workflows need more.
+
+**Structured data from any platform:** Apify Actors extract specific data points from specific platforms. A Google Maps Actor returns business names, addresses, ratings, and review counts as structured JSON. An Amazon Actor returns product titles, prices, and seller information. No parsing, no guesswork.
+
+**20,000+ community-built tools:** Apify Store hosts thousands of ready-made scrapers and automation tools built by a global developer community. If a platform exists, there's likely an Actor for it.
+
+**Sync or async execution:** Run Actors synchronously (wait for results) or asynchronously (start and continue). Long-running scrapes can trigger Dify workflows via webhook when they finish.
+
+**Production-grade infrastructure:** Apify handles proxies, browser fingerprinting, rate limiting, and retries. Scraping at scale without getting blocked is built in.
+
+---
+
+# What you can build
+
+## RAG knowledge base enrichment
+
+Keep AI chatbots grounded in fresh, accurate web data. Use Apify's Website Content Crawler to scrape documentation, competitor sites, or industry resources. Then feed that structured content into Dify's Knowledge Base. The result: a chatbot that answers questions with current, real-world information instead of stale training data.
+
+**Example:** Collect competitor pricing pages weekly → ingest into Dify Knowledge Base → build a competitive analysis chatbot that answers "What does Competitor X charge for their enterprise plan?" with live data.
+
+## Automated research and monitoring agents
+
+Build AI agents that automatically gather and analyze web data on a schedule. Track competitor moves, monitor news mentions, and aggregate industry trends - all processed through Dify's LLM workflows.
+
+**Example:** Schedule Google Search Scraper for "[competitor name] product launch" → Dify workflow summarizes findings with an LLM → pushes a digest to Slack or email every morning.
+
+## Lead generation and enrichment
+
+Turn location, industry, or keyword searches into qualified lead lists. Apify Actors extract business data from Google Maps, company websites, and directories. Dify workflows then enrich, score, and format that data for CRM import.
+
+**Example:** Input "digital marketing agencies in Berlin" → Google Maps Scraper extracts 200 businesses with contact info → Dify workflow scores and ranks by rating and review count → outputs a formatted lead list.
+
+## E-commerce price and review monitoring
+
+Track product prices, availability, and customer sentiment across marketplaces. Apify Actors scrape Amazon, Shopify stores, eBay, and more. Dify workflows analyze changes and trigger alerts.
+
+**Example:** Amazon Product Scraper runs daily on 50 competitor products → Dify workflow compares prices to yesterday → sends an alert when a price drops more than 10%.
+
+---
+
+# Features
+
+The Apify plugin provides six tools and one trigger for Dify workflows:
+
+## Run Actor
+
+Start any Actor with a custom JSON input. Choose synchronous execution (wait for results within the workflow) or asynchronous execution (start the Actor and continue). Use this for any scraping, crawling, or data extraction task.
+
+## Run task
+
+Execute preconfigured Actor tasks with predefined inputs, schedules, and settings. Ideal for recurring workflows where the same Actor runs with the same parameters.
+
+## Scrape a single URL
+
+Quickly extract content from a single web page without configuring a full crawl. Perfect for on-the-fly data retrieval inside chatflows and agents.
+
+## Get dataset items
+
+Retrieve structured results stored in an Apify dataset. Combine this with Run Actor to first execute a scraper, then pull the results into the next workflow step.
+
+## Get key-value store record
+
+Fetch files, screenshots, or data records from Apify's key-value storage. Useful for retrieving exported files, cached results, or any data stored during Actor runs.
+
+## Actor run finished trigger
+
+Automatically trigger a Dify workflow or chatflow when an Apify Actor completes. Connect this via webhook so long-running scrapes kick off downstream processing the moment results are ready without polling.
+
+---
+
+# Getting started
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed and configured:
+- An [Apify account](https://console.apify.com/) (free tier available)
+- A [Dify account](https://dify.ai/) (self-hosted or cloud)
 
-  * **Python**: Version `3.12` or newer is required.
-  * **UV**: You also need pre-installed [UV package manager](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) for Python
-  * **Apify Account**: You will need an Apify account and your personal API Token. You can find your token in the [Apify Console](https://console.apify.com/account/integrations).
-  * **Dify Account**: A Dify account to test the plugin.
+## Installation
 
-## Installation & Setup
+1. In Dify, go to **Plugins** from the top menu.
+2. Select **Install plugin** → **Marketplace**.
+3. Find **apify-integration** and install it.
+4. Return to the **Plugins** page to configure it.
 
-Follow these steps to set up the project for local development.
+## Authentication
 
-**1. Install with Standalone Binary (macOS / Linux)**
+Connect with an API key or OAuth:
 
-Download the right binary from the Dify Plugin CLI release [page](https://github.com/langgenius/dify-plugin-daemon/releases).
+**API key:**
 
-* macOS (ARM — Apple Silicon): e.g. `dify-plugin-darwin-arm64`
-* macOS (Intel): `dify-plugin-darwin-amd64`
-* Linux (amd64 or arm64): `dify-plugin-linux-amd64`
+1. Open the plugin and select **Add API key**.
+2. Paste the Apify API token from [Apify Console → Integrations](https://console.apify.com/account/integrations).
+3. Select **Save**. A green indicator confirms the connection.
 
-**2. Make the binary executable:**
-```bash
-chmod +x dify-plugin-<platform-arch>
+**OAuth:**
+
+1. Open the plugin and select **Add OAuth**.
+2. Follow the authorization flow.
+3. Select **Save**.
+
+---
+
+# Usage example: scraping Google Maps data in a workflow
+
+This example shows how to extract restaurant data from Google Maps using Apify's Google Maps Scraper Actor inside a Dify workflow.
+
+## Step 1: Create a new workflow
+
+1. Open the Dify project and create a new **Workflow** from blank.
+2. Click **+** → **Tools** → **Apify** → **Run Actor**.
+
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-workflow-start.png" alt="Start Dify Workflow" />
+
+## Step 2: Configure the Run Actor node
+
+1. Set **Actor ID** to `compass/crawler-google-places`.
+2. Set **Input** to JSON object:
+
+```json
+{
+  "language": "en",
+  "locationQuery": "New York, USA",
+  "maxCrawledPlacesPerSearch": 50,
+  "placeMinimumStars": "two",
+  "searchStringsArray": ["restaurant"],
+  "skipClosedPlaces": false
+}
 ```
 
-**3. Run version check:**
+1. Set **Wait for Finish** to `false` to return immediately after starting the run, or `true` to wait until the run reaches a terminal state (e.g. SUCCEEDED, FAILED).
 
-```bash
-./dify-plugin-<platform-arch> version
-```
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-actor-run.png" alt="Configure Actor Run" />
 
-**4. Rename and move it to your system PATH:**
-```bash
-mv dify-plugin-<platform-arch> dify
-sudo mv dify /usr/local/bin/
-```
+## Step 3: Connect and configure the output
 
-**5. Confirm installation with:**
+1. Add an **Output** node and connect the **Run Actor** node to it.
+2. In the Output node, add a variable (e.g. `result`) and map it to the Run Actor response.
 
-```bash
-dify version
-```
+<img src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-end-node.png" alt="Configure End Node" />
 
-**6. Clone the Repository**
+## Step 4: Run
 
-```bash
-git clone https://github.com/apify/apify-dify-integration.git
-cd apify-dify-integration
-```
+Click **Run**. Dify triggers the Apify Actor. Run details (including run ID) are returned immediately or after completion, depending on **Wait for Finish**.
 
-**7. Create and Activate a Virtual Environment**
+You can inspect runs and results in [Apify Console](https://console.apify.com/actors/runs).
 
-It is highly recommended to use a virtual environment to manage project dependencies.
+---
 
-```bash
-# Create the virtual environment
-uv venv
+# Using Apify as a trigger
 
-# Activate it (on macOS/Linux)
-source .venv/bin/activate
+Apify can automatically start Dify workflows when an Actor finishes, so it’s ideal for scheduled pipelines.
 
-# Install dependencies
-uv pip install -e ".[dev]"
-```
+1. In **Plugins**, open the Apify plugin → **Endpoints** section.
+2. Click **+**, choose the target **Workflow** or **Chatflow** app, name it, and save. Dify generates endpoint URLs.
+3. In [Apify Console](https://console.apify.com/), open the Actor → **Integrations** → add an **HTTP webhook** with the Dify endpoint URL.
+4. Under **Events**, select **Run succeeded** and save.
 
-And we are pretty much ready!
+**Note:** The Dify Workflow or Chatflow must be **published** for the webhook to work.
 
-## Debugging & Development
+For detailed trigger setup, including chatflow configuration and accessing webhook payload data, see the [Apify Dify integration guide](https://docs.apify.com/platform/integrations/dify).
 
-To enable interactive debugging, follow these steps:
+---
 
-1. **Create an environment file**  
-   Copy `.env.example` to `.env`.
+# Popular Actors to try with Dify
 
-2. **Obtain your debugging key**  
-   - Go to the [Dify Plugins](https://cloud.dify.ai/plugins) page.  
-   - Click the **bug icon** in the upper right corner to generate a debugging key.  
-   - Replace the default value of `REMOTE_INSTALL_KEY` in your `.env` file with this key.
-  
-3. **Run the project**  
-   Start the project in debug mode with:  
-    ```bash
-    python -m main
-    ```
+- **Website Content Crawler** - Extract clean text from any website for RAG pipelines
+- **Google Maps Scraper** - Business data with ratings, reviews, and contact details
+- **Google Search Scraper** - Search results for research and monitoring workflows
+- **Amazon Product Scraper** - Product data, prices, and reviews
+- **Instagram Scraper** - Posts, profiles, and hashtag data
+- **Twitter Scraper** - Tweets, profiles, and trends
 
-### Local debugging with Docker
+Browse 20,000+ Actors on [Apify Store](https://apify.com/store).
 
-To test the plugin against a local Dify instance, use [Docker Compose](https://docs.dify.ai/en/self-host/quick-start/docker-compose): clone Dify, start it with `docker compose up -d` from the `docker` directory, then complete the admin setup at `http://localhost/install`.
+---
 
-Build the plugin package and upload it in Dify to test:
+# Support
 
-```bash
-# From the plugin repo root
-dify plugin package . -o apify.difypkg
-```
-
-Then in your local Dify plugins page, upload the `apify.difypkg` local package file to install the plugin and test your changes.
-
-## Usage Example: Running an Actor
-
-This section shows how to run an Apify actor inside a Dify workflow.  
-We will use the **Google Maps Scraper** actor (`compass/crawler-google-places`) as an example.
-
-### Step 1: Create a New Workflow
-1. Open your **Dify project**.
-2. Create a new **Workflow** from Blank.
-3. Click on the **+** button followed by **Tools -> Apify -> Run Actor**.
-
-<img 
-  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-workflow-start.png" 
-  alt="Start Dify Workflow"
-/>
-
-4. Fill in the following settings:
-   - **Actor ID**: `compass/crawler-google-places`
-   - **Input**:  
-     ```json
-     {
-       "language": "en",
-       "locationQuery": "New York, USA",
-       "maxCrawledPlacesPerSearch": 50,
-       "placeMinimumStars": "two",
-       "searchStringsArray": ["restaurant"],
-       "skipClosedPlaces": false
-     }
-     ```
-   - **Wait for Finish**:  
-    Set to `false` if you want the workflow to return immediately after starting or to `true` if you want to wait for the run to reach a terminal state (e.g SUCCEEDED, FAILED).
-
-<img 
-  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-actor-run.png" 
-  alt="Configure Actor Run" 
-/>
-
-### Step 3: Connect Workflow Blocks
-1. Select **Output** block in a workflow.
-2. Connect the **Run Actor** block to the **Output** block.  
-3. Create a variable to store results:
-    - Open the output of the **Output** block.  
-    - Add a variable, e.g., `result`, that maps to the actor’s response.  
-
-<img 
-  src="https://raw.githubusercontent.com/apify/apify-dify-integration/main/docs/images/dify-configure-end-node.png" 
-  alt="Configure End Node" 
-/>
-
-### Step 4: Run the Workflow
-1. Click the **Run** button.  
-2. Dify will trigger the Apify actor.  
-3. Run details (including run ID) are returned immediately or after completion, depending on `Wait for Finish` parameter.
-4. You can check results in [Apify Console Runs Page](https://console.apify.com/actors/runs).
-
-## Publishing a New Version to the Dify Marketplace
-
-Follow these steps when you want to release an updated version of the plugin.
-
-**1. Update the version number**
-
-In `manifest.yaml`, bump the `version` field following [semantic versioning](https://semver.org/):
-
-```yaml
-version: "0.0.2"  # was 0.0.1
-```
-
-Commit and push the change to `main`.
-
-**2. Create a GitHub Release**
-
-1. Go to the repository on GitHub → **Releases** → **Draft a new release**.
-2. Click **Choose a tag** → type the new version (e.g. `v0.0.2`) → select **Create new tag: v0.0.2 on publish**.
-3. Set the release title (e.g. `v0.0.2`).
-4. Click **Publish release**.
-
-This triggers the release workflow, which lints the code, packages the plugin, and attaches `apify.difypkg` to the release assets.
-
-**3. Download the `.difypkg` file**
-
-Once the workflow finishes (~1–2 min), go to the release page and download `apify.difypkg` from the **Assets** section. Rename it to include the version, e.g. `apify-0.0.2.difypkg`.
-
-**4. Submit a PR to the Dify plugins repository**
-
-1. Go to your fork of [langgenius/dify-plugins](https://github.com/langgenius/dify-plugins).
-2. Navigate to `apify/apify-integration/`.
-3. Upload `apify-0.0.2.difypkg` (keep previous version files — multiple versions can coexist).
-4. Open a Pull Request to `langgenius/dify-plugins:main`.
-5. In the PR description, select **Version update** as the submission type and briefly describe what changed.
-
-After the PR is merged, the new version appears automatically on the Dify marketplace.
-
-## Support
-- For Apify documentation, visit [docs.apify.com](https://docs.apify.com).
-- For Dify plugin development, check [Dify Plugin Docs](https://docs.dify.ai/plugin-dev-en/).
+- [Apify documentation](https://docs.apify.com/)
+- [Apify Dify integration guide](https://docs.apify.com/platform/integrations/dify)
+- [Dify documentation](https://docs.dify.ai/)
+- [Apify community on Discord](https://discord.com/invite/jyEM2PRvMU)
