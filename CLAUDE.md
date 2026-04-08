@@ -11,6 +11,7 @@ main.py                  # Plugin entry point (DifyPlugin with 120s timeout)
 manifest.yaml            # Plugin metadata, version, permissions, entrypoints
 pyproject.toml           # Python project config and dev tooling
 requirements.txt         # Runtime dependencies
+CONTRIBUTING.md          # Developer setup, debugging, and publishing guide
 provider/
   apify.py               # OAuth provider: token exchange, refresh, credential validation
   apify.yaml             # Tool provider schema for OAuth
