@@ -36,7 +36,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
           url=$(curl -s https://api.github.com/repos/langgenius/dify-plugin-daemon/releases/latest \
-            | jq -r '.assets[] | select(.name | test("linux-amd64$")) | .browser_download_url')
+            | jq -r '.assets[] | select(.name == "dify-plugin-linux-amd64") | .browser_download_url')
           curl -L "$url" -o dify
           chmod +x dify
           sudo mv dify /usr/local/bin/dify
