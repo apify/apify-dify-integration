@@ -99,7 +99,7 @@ Connect with an API key or OAuth:
 **API key:**
 
 1. Open the plugin and select **Add API key**.
-2. Paste the Apify API token from [Apify Console → Integrations](https://console.apify.com/account/integrations).
+2. Paste the Apify API token from [Apify Console → Integrations](https://console.apify.com/settings/integrations?utm_source=dify&utm_medium=integrations).
 3. Select **Save**. A green indicator confirms the connection.
 
 **OAuth:**

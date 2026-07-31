@@ -8,7 +8,7 @@ Before you begin, ensure you have the following installed and configured:
 
   * **Python**: Version `3.12` or newer is required.
   * **UV**: You also need pre-installed [UV package manager](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer) for Python
-  * **Apify Account**: You will need an Apify account and your personal API Token. You can find your token in the [Apify Console](https://console.apify.com/account/integrations).
+  * **Apify Account**: You will need an Apify account and your personal API Token. You can find your token in the [Apify Console](https://console.apify.com/settings/integrations?utm_source=dify&utm_medium=integrations).
   * **Dify Account**: A Dify account to test the plugin.
 
 ## Installation & Setup
