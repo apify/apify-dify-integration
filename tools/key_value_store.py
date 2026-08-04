@@ -5,10 +5,15 @@ from typing import Any
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
-from utils.error_handling import ToolInvokeError
 
 from tools.client import get_apify_client
-from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param
+from utils.error_handling import (
+    PASSTHROUGH_ERRORS,
+    ToolInvokeError,
+    raise_apify_error,
+    raise_unexpected_error,
+    require_param,
+)
 
 
 def get_file_extension(content_type: str) -> str:
@@ -133,6 +138,8 @@ class GetKeyValueStoreRecord(Tool):
                 "dataType": "text",
             })
 
+        except PASSTHROUGH_ERRORS:
+            raise
         except ApifyApiError as e:
             raise_apify_error("fetching store record", e)
         except Exception as e:

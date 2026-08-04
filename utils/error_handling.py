@@ -14,6 +14,12 @@ except ImportError:
         pass
 
 
+# Errors that already carry a deliberate, user-facing message. A tool's catch-all handler must
+# re-raise these untouched, otherwise they get re-wrapped as "Unexpected error while ..." and the
+# real message is buried behind a prefix that wrongly implies an unhandled crash.
+PASSTHROUGH_ERRORS = (ToolInvokeError, ToolParameterValidationError)
+
+
 def validate_number(
     value: Any,
     *,
@@ -92,8 +98,23 @@ def parse_json_param(raw_value: str | None, error_message: str) -> Any:
         raise ToolParameterValidationError(error_message) from exc
 
 
+# Hints appended to Apify API errors. Only codes whose hint is actionable are listed; for others
+# Apify's own message is already specific enough.
+_STATUS_HINTS = {
+    401: "authentication failed - check your Apify token",
+    403: "access is forbidden - your account may lack permission for this resource",
+    429: "Apify rate limit exceeded - please retry later",
+}
+
+
 def raise_apify_error(action: str, exc: ApifyApiError) -> None:
-    message = f"Apify API error while {action}: {exc.message or str(exc)}"
+    detail = exc.message or str(exc)
+    hint = _STATUS_HINTS.get(getattr(exc, "status_code", None))
+    if getattr(exc, "status_code", None) is not None and exc.status_code >= 500 and hint is None:
+        hint = "Apify is experiencing a server error - please retry later"
+    message = f"Apify API error while {action}: {detail}"
+    if hint:
+        message += f" ({hint})"
     raise ToolInvokeError(message) from exc
 
 

@@ -1,12 +1,15 @@
 from collections.abc import Generator
+from datetime import timedelta
 from typing import Any
 
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
-from tools.client import get_apify_client
+from tools.client import get_apify_client, run_to_dict
 from utils.error_handling import (
+    PASSTHROUGH_ERRORS,
+    ToolInvokeError,
     parse_json_param,
     raise_apify_error,
     raise_unexpected_error,
@@ -44,7 +47,7 @@ class RunTask(Tool):
 
             task_options = {
                 "build": build,
-                "timeout_secs": timeout_secs,
+                "run_timeout": timedelta(seconds=timeout_secs) if timeout_secs is not None else None,
                 "memory_mbytes": memory_mb,
             }
             filtered_options = {k: v for k, v in task_options.items() if v is not None}
@@ -56,8 +59,16 @@ class RunTask(Tool):
                 # Asynchronous Execution: starts the task and returns immediately.
                 run_details = task_client.start(task_input=input_override, **filtered_options)
 
-            yield self.create_variable_message("result", run_details)
+            if run_details is None:
+                raise ToolInvokeError(
+                    f"The run of task '{task_id}' was started but Apify did not return its details. "
+                    "Check the run status in the Apify Console."
+                )
 
+            yield self.create_variable_message("result", run_to_dict(run_details))
+
+        except PASSTHROUGH_ERRORS:
+            raise
         except ApifyApiError as e:
             raise_apify_error("running task", e)
         except Exception as e:

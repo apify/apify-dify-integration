@@ -1,12 +1,15 @@
 from collections.abc import Generator
+from datetime import timedelta
 from typing import Any
 
 from apify_client.errors import ApifyApiError
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
-from tools.client import get_apify_client
+from tools.client import get_apify_client, run_to_dict
 from utils.error_handling import (
+    PASSTHROUGH_ERRORS,
+    ToolInvokeError,
     parse_json_param,
     raise_apify_error,
     raise_unexpected_error,
@@ -33,11 +36,16 @@ def get_prefilled_input(actor_client: Any) -> dict[str, Any]:
         build_client = run_sync(actor_client.default_build())
         build = run_sync(build_client.get())
 
-        if not build:
+        if build is None:
             return {}
 
-        actor_definition = build.get("actorDefinition", {})
-        input_schema = actor_definition.get("input", {})
+        # apify-client v3 returns a `Build` model rather than a dict. `actor_definition` is a model
+        # too, but its `input` is a plain dict, so the schema traversal below stays dict-based.
+        actor_definition = build.actor_definition
+        if actor_definition is None:
+            return {}
+
+        input_schema = actor_definition.input or {}
         properties = input_schema.get("properties", {})
 
         if not properties:
@@ -90,7 +98,7 @@ class RunActor(Tool):
 
             run_options = {
                 "build": build,
-                "timeout_secs": timeout_secs,
+                "run_timeout": timedelta(seconds=timeout_secs) if timeout_secs is not None else None,
                 "memory_mbytes": memory_mb,
             }
             filtered_options = {k: v for k, v in run_options.items() if v is not None}
@@ -101,8 +109,18 @@ class RunActor(Tool):
             else:
                 # Asynchronous Execution
                 run_details = actor_client.start(run_input=run_input, **filtered_options)
-            yield self.create_variable_message("result", run_details)
 
+            # `call()` returns None only if the run keeps 404ing for ~3s after being started.
+            if run_details is None:
+                raise ToolInvokeError(
+                    f"The run of Actor '{actor_id}' was started but Apify did not return its details. "
+                    "Check the run status in the Apify Console."
+                )
+
+            yield self.create_variable_message("result", run_to_dict(run_details))
+
+        except PASSTHROUGH_ERRORS:
+            raise
         except ApifyApiError as e:
             raise_apify_error("running actor", e)
         except Exception as e:
