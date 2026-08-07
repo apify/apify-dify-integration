@@ -109,8 +109,9 @@ _STATUS_HINTS = {
 
 def raise_apify_error(action: str, exc: ApifyApiError) -> None:
     detail = exc.message or str(exc)
-    hint = _STATUS_HINTS.get(getattr(exc, "status_code", None))
-    if getattr(exc, "status_code", None) is not None and exc.status_code >= 500 and hint is None:
+    status_code = getattr(exc, "status_code", None)
+    hint = _STATUS_HINTS.get(status_code)
+    if hint is None and status_code is not None and status_code >= 500:
         hint = "Apify is experiencing a server error - please retry later"
     message = f"Apify API error while {action}: {detail}"
     if hint:
