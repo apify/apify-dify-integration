@@ -44,7 +44,7 @@ credentials_for_provider:
       en_US: 'Apify API Token'
     help:
       en_US: "You can find your API token in your Apify account settings under the 'Integrations' tab."
-    url: 'https://console.apify.com/account/integrations'
+    url: 'https://console.apify.com/settings/integrations?utm_source=dify&utm_medium=integrations'
 tools:
     - tools/run_actor.yaml
     - tools/run_actor_task.yaml
