@@ -15,7 +15,7 @@ provider/
   apify.py               # OAuth provider: token exchange, refresh, credential validation
   apify.yaml             # Tool provider schema for OAuth
 tools/
-  client.py              # ApifyClient wrapper with telemetry tracking headers
+  client.py              # ApifyClient factory (tracking header) + `run_to_dict` model serializer
   run_actor.py           # Execute an Apify Actor with custom input
   run_actor_task.py      # Execute a predefined Apify Task
   scrape_single_url.py   # Quick single-URL web scraping
@@ -28,7 +28,7 @@ endpoints/
 group/
   apify_webhook.yaml     # Webhook group configuration
 utils/
-  error_handling.py      # Shared error handling utilities
+  error_handling.py      # Shared error handling: param validation, `raise_apify_error`, `PASSTHROUGH_ERRORS`
 .github/workflows/
   test.yml               # Lint + Dify plugin validation on PRs to main
   release.yml            # Package and release .difypkg on version tags (v*)
@@ -39,7 +39,7 @@ utils/
 
 - **Language**: Python 3.12+
 - **Plugin framework**: `dify_plugin` (>=0.4.2, <0.5.0)
-- **Apify SDK**: `apify-client`
+- **Apify SDK**: `apify-client` (>=3.0.0, <4.0.0)
 - **HTTP utilities**: `requests`, `werkzeug`
 - **Linting**: `flake8`, `ruff` (line length 120, target py312)
 - **Package manager**: `uv`
@@ -78,5 +78,8 @@ python main.py
 - This is a **Python Dify plugin**, not a Node.js project. There is no `package.json`.
 - The plugin does **not store or cache user data**; credentials are held by Dify and passed at runtime.
 - Tool schemas live in `tools/*.yaml` and must stay in sync with the corresponding `tools/*.py` implementations.
+- **`apify-client` v3 returns Pydantic models, not dicts** (e.g. `run.default_dataset_id`, `build.actor_definition`). Models cannot be yielded to Dify directly — pass run objects through `run_to_dict()` in `tools/client.py`, which dumps them with camelCase aliases and strips the trailing `/` Pydantic adds to `containerUrl`.
+- v3 API differences to watch for: the tracking header is passed as `ApifyClient(token, headers=...)` (no monkey-patching), run/task timeouts use `run_timeout` as a `timedelta` (not `timeout_secs`), and `actor.call()` / `task.call()` can return `None` — tools raise a `ToolInvokeError` in that case.
+- Every tool's catch-all `except Exception` must be preceded by `except PASSTHROUGH_ERRORS: raise`, so deliberate `ToolInvokeError` / `ToolParameterValidationError` messages are not re-wrapped as "Unexpected error while ...".
 - `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints.
 - The `ANTHROPIC_API_KEY` secret used by `claude-md-maintenance.yml` is stored as `CLAUDE_MD_MAINTENANCE_ANTHROPIC_API_KEY` in the repo secrets and is managed by the Apify integrations team.
