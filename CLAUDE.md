@@ -72,6 +72,7 @@ python main.py
 - **Commit format**: conventional commits (`fix:`, `ci:`, `feat:`, etc.)
 - **Branching**: feature branches → PR to `main`
 - **Versioning**: bump `manifest.yaml` version → commit to `main` → create a GitHub Release with tag `v<version>` → CI packages and attaches `apify.difypkg` to the release → download the artifact and submit a PR to [langgenius/dify-plugins](https://github.com/langgenius/dify-plugins) to publish to the Dify marketplace
+- **API-token links**: use `https://console.apify.com/settings/integrations?utm_source=dify&utm_medium=integrations` (UTM params required for attribution). Keep it in sync across `provider/apify.yaml`, `README.md`, and `CONTRIBUTING.md`.
 
 ## Key Notes for AI Assistants
 
