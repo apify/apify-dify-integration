@@ -7,6 +7,7 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
 from utils.error_handling import (
+    PASSTHROUGH_ERRORS,
     raise_apify_error,
     raise_unexpected_error,
     require_param,
@@ -51,6 +52,8 @@ class GetDatasetItems(Tool):
                 "datasetId": dataset_id,
             })
 
+        except PASSTHROUGH_ERRORS:
+            raise
         except ApifyApiError as e:
             raise_apify_error("fetching dataset items", e)
         except Exception as e:

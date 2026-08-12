@@ -38,9 +38,6 @@ parameters:
       - value: cheerio
         label:
           en_US: Cheerio (Raw HTTP)
-      - value: jsdom
-        label:
-          en_US: JSDOM (Raw HTTP with JS)
 output_schema:
   properties:
     result:

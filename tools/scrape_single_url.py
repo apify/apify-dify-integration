@@ -6,7 +6,14 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.client import get_apify_client
-from utils.error_handling import raise_apify_error, raise_unexpected_error, require_param, validate_url
+from utils.error_handling import (
+    PASSTHROUGH_ERRORS,
+    ToolInvokeError,
+    raise_apify_error,
+    raise_unexpected_error,
+    require_param,
+    validate_url,
+)
 
 WEBSITE_CONTENT_CRAWLER_ID = "apify/website-content-crawler"
 
@@ -42,12 +49,16 @@ class ScrapeSingleUrl(Tool):
 
             actor_client = client.actor(WEBSITE_CONTENT_CRAWLER_ID)
             actor_result = actor_client.call(run_input=actor_input)
-            dataset_id = actor_result["defaultDatasetId"]
-            dataset_client = client.dataset(dataset_id)
+
+            if actor_result is None:
+                raise ToolInvokeError(
+                    f"The scraping run for URL {url} was started but Apify did not return its details."
+                )
+
+            dataset_client = client.dataset(actor_result.default_dataset_id)
             items = dataset_client.list_items().items
 
             if not items:
-                from utils.error_handling import ToolInvokeError
                 raise ToolInvokeError(
                     f"Scraping completed but no data was returned for URL: {url}. "
                     "The page may have failed to load, the URL may be invalid, "
@@ -58,6 +69,8 @@ class ScrapeSingleUrl(Tool):
 
             yield self.create_variable_message("result", scraped_item)
 
+        except PASSTHROUGH_ERRORS:
+            raise
         except ApifyApiError as e:
             raise_apify_error("scraping URL", e)
         except Exception as e:
