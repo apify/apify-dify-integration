@@ -77,6 +77,7 @@ python main.py
 
 - This is a **Python Dify plugin**, not a Node.js project. There is no `package.json`.
 - The plugin does **not store or cache user data**; credentials are held by Dify and passed at runtime.
+- Auth is either an Apify API token or OAuth. OAuth works out of the box on Dify Cloud; **self-hosted Dify needs a dedicated OAuth app** (`client_id`/`client_secret` in `provider/apify.yaml`'s `oauth_schema`) requested from the Apify integrations team at integrations@apify.com.
 - Tool schemas live in `tools/*.yaml` and must stay in sync with the corresponding `tools/*.py` implementations.
 - `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints.
 - The `ANTHROPIC_API_KEY` secret used by `claude-md-maintenance.yml` is stored as `CLAUDE_MD_MAINTENANCE_ANTHROPIC_API_KEY` in the repo secrets and is managed by the Apify integrations team.
