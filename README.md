@@ -186,6 +186,7 @@ Browse 20,000+ Actors on [Apify Store](https://apify.com/store).
 
 # Support
 
+- [Source repository](https://github.com/apify/apify-dify-integration)
 - [Apify documentation](https://docs.apify.com/)
 - [Apify Dify integration guide](https://docs.apify.com/platform/integrations/dify)
 - [Dify documentation](https://docs.dify.ai/)

@@ -1,7 +1,9 @@
-version: 1.1.0
+version: 1.2.0
 type: plugin
 author: apify
 name: apify-integration
+repo: https://github.com/apify/apify-dify-integration
+contact: integrations@apify.com
 label:
   en_US: Apify
   ja_JP: Apify
@@ -34,7 +36,7 @@ plugins:
   endpoints:
     - group/apify_webhook.yaml
 meta:
-  version: 1.1.0
+  version: 1.2.0
   arch:
     - amd64
     - arm64
