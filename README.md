@@ -108,6 +108,8 @@ Connect with an API key or OAuth:
 2. Follow the authorization flow.
 3. Select **Save**.
 
+> **Note for self-hosted Dify:** OAuth requires a dedicated OAuth app configured for your environment. To request one, contact the Apify integrations team at [integrations@apify.com](mailto:integrations@apify.com) with your self-hosted Dify instance URL. On Dify Cloud, OAuth works out of the box.
+
 ---
 
 # Usage example: scraping Google Maps data in a workflow
