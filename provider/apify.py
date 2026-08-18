@@ -21,11 +21,31 @@ APIFY_SCOPES = ["profile", "full_api_access"]
 APIFY_REQUEST_TIMEOUT_SECS = 10
 APIFY_DEFAULT_TOKEN_EXPIRY_SECS = 3600
 
+# A failed token response can still carry tokens, so only these keys ever reach an error message.
+OAUTH_SAFE_ERROR_KEYS = ("error", "error_description", "error_uri")
+
+
+def _safe_oauth_error_detail(response: Any) -> str:
+    """HTTP status plus the OAuth error fields only, never the raw body."""
+    status = getattr(response, "status_code", "unknown")
+
+    try:
+        body = response.json()
+    except (ValueError, AttributeError):
+        body = None
+
+    if isinstance(body, dict):
+        details = {key: body[key] for key in OAUTH_SAFE_ERROR_KEYS if key in body}
+        if details:
+            rendered = ", ".join(f"{key}={value}" for key, value in details.items())
+            return f"HTTP {status} ({rendered})"
+
+    return f"HTTP {status}"
+
 
 class ApifyProvider(ToolProvider):
     def _validate_credentials(self, credentials: dict[str, Any]) -> None:
         try:
-            # Determine credential type based on available keys
             if "access_token" in credentials:
                 credential_type = CredentialType.OAUTH
             elif "apify_token" in credentials:
@@ -51,10 +71,7 @@ class ApifyProvider(ToolProvider):
             raise ToolProviderCredentialValidationError(msg) from e
 
     def _oauth_get_authorization_url(self, redirect_uri: str, system_credentials: Mapping[str, Any]) -> str:
-        """
-        Generate the authorization URL for the user to start the OAuth flow.
-        Corrected to match the ToolProvider interface.
-        """
+        """Generate the authorization URL that starts the OAuth flow."""
         state = secrets.token_urlsafe(16)
 
         client_id = system_credentials.get("client_id")
@@ -74,11 +91,7 @@ class ApifyProvider(ToolProvider):
     def _oauth_get_credentials(
         self, redirect_uri: str, system_credentials: Mapping[str, Any], request: Request
     ) -> ToolOAuthCredentials:
-        """
-        Exchange the authorization code for an access token and refresh token.
-        Corrected to match the ToolProvider interface.
-        """
-
+        """Exchange the authorization code for an access token and refresh token."""
         client_id = system_credentials.get("client_id")
         client_secret = system_credentials.get("client_secret")
 
@@ -134,30 +147,22 @@ class ApifyProvider(ToolProvider):
 
             return ToolOAuthCredentials(credentials=credentials, expires_at=expires_at)
 
+        except ToolProviderOAuthError:
+            raise
         except requests.RequestException as e:
-            # Include response details when available (e.g., 400 Bad Request)
             response = getattr(e, "response", None)
             if response is not None:
-                try:
-                    response_body = response.json()
-                except ValueError:
-                    response_body = response.text
-                msg = (
-                    f"Token exchange failed with HTTP {response.status_code}: {response_body}"
-                )
+                msg = f"Token exchange failed with {_safe_oauth_error_detail(response)}"
                 raise ToolProviderOAuthError(msg) from e
-            raise ToolProviderOAuthError(f"Network error during token exchange: {str(e)}") from e
+            raise ToolProviderOAuthError("Network error during token exchange.") from e
         except Exception as e:
-            raise ToolProviderOAuthError(f"Failed to exchange authorization code: {str(e)}")
+            # `str(e)` is omitted: it can embed the payload, which carries client_secret.
+            raise ToolProviderOAuthError("Failed to exchange authorization code.") from e
 
     def _oauth_refresh_credentials(
         self, redirect_uri: str, system_credentials: Mapping[str, Any], credentials: Mapping[str, Any]
     ) -> ToolOAuthCredentials:
-        """
-        Use the refresh token to obtain a new access token.
-        Corrected to match the ToolProvider interface.
-        """
-
+        """Use the refresh token to obtain a new access token."""
         refresh_token = credentials.get("refresh_token")
         if not refresh_token:
             raise ToolProviderOAuthError("No refresh token available")
@@ -201,18 +206,14 @@ class ApifyProvider(ToolProvider):
 
             return ToolOAuthCredentials(credentials=new_credentials, expires_at=expires_at)
 
+        except ToolProviderOAuthError:
+            raise
         except requests.RequestException as e:
-            # Include response details when available (e.g., 400 Bad Request)
             response = getattr(e, "response", None)
             if response is not None:
-                try:
-                    response_body = response.json()
-                except ValueError:
-                    response_body = response.text
-                msg = (
-                    f"Token refresh failed with HTTP {response.status_code}: {response_body}"
-                )
+                msg = f"Token refresh failed with {_safe_oauth_error_detail(response)}"
                 raise ToolProviderOAuthError(msg) from e
-            raise ToolProviderOAuthError(f"Network error during token refresh: {str(e)}") from e
+            raise ToolProviderOAuthError("Network error during token refresh.") from e
         except Exception as e:
-            raise ToolProviderOAuthError(f"Failed to refresh credentials: {str(e)}")
+            # `str(e)` is omitted: it can embed the payload, which carries client_secret.
+            raise ToolProviderOAuthError("Failed to refresh credentials.") from e

@@ -124,6 +124,9 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Ruff
+.ruff_cache/
+
 # Environments
 .env
 .venv
