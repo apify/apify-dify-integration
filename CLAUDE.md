@@ -38,11 +38,14 @@ utils/
 ## Technology Stack
 
 - **Language**: Python 3.12+
-- **Plugin framework**: `dify_plugin` (>=0.4.2, <0.5.0)
-- **Apify SDK**: `apify-client`
-- **HTTP utilities**: `requests`, `werkzeug`
-- **Linting**: `flake8`, `ruff` (line length 120, target py312)
+- **Plugin framework**: `dify_plugin` (>=0.9.0, <0.11.0)
+- **Apify SDK**: `apify-client` (>=3.0.0, <4.0.0)
+- **HTTP utilities**: `requests` (>=2.32.0, <3.0.0), `werkzeug` (>=3.1.0, <4.0.0)
+- **Linting**: `flake8` (>=7.1.0), `ruff` (>=0.14.0) — line length 120, target py312
 - **Package manager**: `uv`
+
+All dependencies are declared with explicit lower and upper bounds (a Dify Marketplace
+requirement) in both `pyproject.toml` and `requirements.txt` — keep the two in sync.
 
 ## Build, Test & Run
 
@@ -78,5 +81,6 @@ python main.py
 - This is a **Python Dify plugin**, not a Node.js project. There is no `package.json`.
 - The plugin does **not store or cache user data**; credentials are held by Dify and passed at runtime.
 - Tool schemas live in `tools/*.yaml` and must stay in sync with the corresponding `tools/*.py` implementations.
-- `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints.
+- `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints. It also carries the Marketplace-required `repo` and `contact` fields; bump both `version` and `meta.version` together.
+- **Never leak secrets in OAuth errors.** `provider/apify.py` deliberately raises generic `ToolProviderOAuthError` messages: responses are summarized via `_safe_oauth_error_detail()` (HTTP status plus only the `OAUTH_SAFE_ERROR_KEYS` fields), and `str(e)` is omitted because exception text can embed the request payload containing `client_secret`. Do not reintroduce raw response bodies or exception strings.
 - The `ANTHROPIC_API_KEY` secret used by `claude-md-maintenance.yml` is stored as `CLAUDE_MD_MAINTENANCE_ANTHROPIC_API_KEY` in the repo secrets and is managed by the Apify integrations team.
