@@ -11,6 +11,7 @@ main.py                  # Plugin entry point (DifyPlugin with 120s timeout)
 manifest.yaml            # Plugin metadata, version, permissions, entrypoints
 pyproject.toml           # Python project config and dev tooling
 requirements.txt         # Runtime dependencies
+.difyignore              # Files excluded from the packaged .difypkg (dev-only files, caches, VCS)
 provider/
   apify.py               # OAuth provider: token exchange, refresh, credential validation
   apify.yaml             # Tool provider schema for OAuth
@@ -79,4 +80,5 @@ python main.py
 - The plugin does **not store or cache user data**; credentials are held by Dify and passed at runtime.
 - Tool schemas live in `tools/*.yaml` and must stay in sync with the corresponding `tools/*.py` implementations.
 - `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints.
+- Development-only files (e.g. `CLAUDE.md`, `CONTRIBUTING.md`, `.flake8`) must be listed in `.difyignore` so the packaged `.difypkg` ships runtime files only — add new dev-only files there.
 - The `ANTHROPIC_API_KEY` secret used by `claude-md-maintenance.yml` is stored as `CLAUDE_MD_MAINTENANCE_ANTHROPIC_API_KEY` in the repo secrets and is managed by the Apify integrations team.
