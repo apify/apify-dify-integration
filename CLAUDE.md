@@ -39,7 +39,7 @@ utils/
 
 - **Language**: Python 3.12+
 - **Plugin framework**: `dify_plugin` (>=0.4.2, <0.5.0)
-- **Apify SDK**: `apify-client`
+- **Apify SDK**: `apify-client` (pinned to `>=2.5.0,<3.0.0`)
 - **HTTP utilities**: `requests`, `werkzeug`
 - **Linting**: `flake8`, `ruff` (line length 120, target py312)
 - **Package manager**: `uv`
@@ -80,3 +80,4 @@ python main.py
 - Tool schemas live in `tools/*.yaml` and must stay in sync with the corresponding `tools/*.py` implementations.
 - `manifest.yaml` controls plugin version, minimum Dify version (`1.11.4`), memory (`256MB`), and enabled permissions — update it when adding new tools or endpoints.
 - The `ANTHROPIC_API_KEY` secret used by `claude-md-maintenance.yml` is stored as `CLAUDE_MD_MAINTENANCE_ANTHROPIC_API_KEY` in the repo secrets and is managed by the Apify integrations team.
+- `apify-client` is pinned to `<3.0.0` because `tools/client.py` monkey-patches `http_client._prepare_request_call` to inject the `x-apify-integration-platform: dify` tracking header. v3.0.0+ breaks this patch — when migrating, switch to the supported `ApifyClient(headers=...)` constructor argument.
