@@ -15,6 +15,18 @@ def get_apify_client(credentials: dict[str, Any], credential_type: CredentialTyp
         credentials: Credentials dict containing the authentication token
         credential_type: Type of credentials (OAUTH or API_KEY)
     """
+    return ApifyClient(get_apify_token(credentials, credential_type), headers=TRACKING_HEADER)
+
+
+def get_apify_token(credentials: dict[str, Any], credential_type: CredentialType) -> str:
+    """
+    Extracts the Apify token from the Dify credentials, for calls that bypass ApifyClient
+    (e.g. an Actor's Standby endpoint).
+
+    Args:
+        credentials: Credentials dict containing the authentication token
+        credential_type: Type of credentials (OAUTH or API_KEY)
+    """
 
     # Extract token based on credential type
     if credential_type == CredentialType.OAUTH:
@@ -28,7 +40,7 @@ def get_apify_client(credentials: dict[str, Any], credential_type: CredentialTyp
     else:
         raise ValueError(f"Unsupported credential type: {credential_type}")
 
-    return ApifyClient(token, headers=TRACKING_HEADER)
+    return token
 
 
 def run_to_dict(run: Any) -> dict[str, Any]:

@@ -1,4 +1,4 @@
-version: 1.2.0
+version: 1.3.0
 type: plugin
 author: apify
 name: apify-integration
@@ -36,7 +36,7 @@ plugins:
   endpoints:
     - group/apify_webhook.yaml
 meta:
-  version: 1.2.0
+  version: 1.3.0
   arch:
     - amd64
     - arm64
