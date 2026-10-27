@@ -188,5 +188,6 @@ Thumbs.db
 # Development-only files
 #  Excluded so the package ships runtime files only.
 CLAUDE.md
+AGENTS.md
 CONTRIBUTING.md
 .flake8
