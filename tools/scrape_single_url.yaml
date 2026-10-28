@@ -2,12 +2,12 @@ identity:
   name: scrape_single_url
   author: 'Apify'
   label:
-    en_US: Scrape Single URL
+    en_US: (Deprecated) Scrape Single URL
 description:
   human:
-    en_US: Scrape a single URL using the Apify Website Content Crawler Actor and get its content as markdown and HTML.
+    en_US: This operation is deprecated and will be removed in a future release. Use the Web Fetch operation instead.
   llm: |
-    This tool scrapes a single web page using the Apify Website Content Crawler. It requires a URL. The `wait_for_finish` parameter is critical: if `true` (the default), it waits for the scrape to complete and returns an array of the scraped data items. If `false`, it starts the scrape and immediately returns a JSON object with the Actor run's details.
+    Deprecated: use the web_fetch tool instead. This tool scrapes a single web page using the Website Content Crawler Actor. It requires a URL and a `crawler_type`. It waits for the scrape to complete and returns the scraped page with its URL, text, markdown, HTML, and metadata.
 parameters:
   - name: url
     type: string
