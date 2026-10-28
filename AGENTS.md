@@ -52,6 +52,10 @@ installed in CI from the `dify-plugin-daemon` releases page; locally see `CONTRI
   (`run.default_dataset_id`, `build.actor_definition`). Run options are `run_timeout` as a
   `timedelta` and `memory_mbytes`; `actor.call()` / `task.call()` can return `None`, which the tools
   turn into a `ToolInvokeError`.
+- **Return results with `yield from result_messages(self, payload)`** (`utils/messages.py`), never a
+  bare `create_variable_message`. Dify agents skip variable messages and read only text and JSON,
+  so the helper yields a JSON message for agents and the `result` variable (fields per
+  `output_schema`) for workflows. Its optional `agent_payload` sends agents a smaller JSON.
 - **Run Actor prefill.** When `input_body` is empty, `run_actor.py` reads the default build's input
   schema and uses each property's `prefill` as input.
 - **Web Fetch talks HTTP, not `ApifyClient`.** `web_fetch.py` POSTs to

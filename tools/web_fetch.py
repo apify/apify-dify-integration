@@ -17,6 +17,7 @@ from utils.error_handling import (
     require_param,
     validate_url,
 )
+from utils.messages import result_messages
 
 # Standby endpoint of the apify/web-fetch Actor. It responds with the fetched page in a single request.
 WEB_FETCH_STANDBY_URL = "https://web-fetch.apify.actor/"
@@ -188,7 +189,7 @@ class WebFetch(Tool):
             if not isinstance(envelope, dict):
                 raise ToolInvokeError(f"Web Fetch returned an unexpected response for URL: {url}")
 
-            yield self.create_variable_message("result", envelope)
+            yield from result_messages(self, envelope)
 
         except PASSTHROUGH_ERRORS:
             raise

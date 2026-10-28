@@ -14,6 +14,7 @@ from utils.error_handling import (
     require_param,
     validate_url,
 )
+from utils.messages import result_messages
 
 WEBSITE_CONTENT_CRAWLER_ID = "apify/website-content-crawler"
 
@@ -67,7 +68,7 @@ class ScrapeSingleUrl(Tool):
 
             scraped_item = items[0]
 
-            yield self.create_variable_message("result", scraped_item)
+            yield from result_messages(self, scraped_item)
 
         except PASSTHROUGH_ERRORS:
             raise

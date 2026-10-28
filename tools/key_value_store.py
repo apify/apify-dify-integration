@@ -14,6 +14,7 @@ from utils.error_handling import (
     raise_unexpected_error,
     require_param,
 )
+from utils.messages import result_messages
 
 
 def get_file_extension(content_type: str) -> str:
@@ -88,7 +89,7 @@ class GetKeyValueStoreRecord(Tool):
                 if isinstance(record_value, bytes):
                     record_value = record_value.decode("utf-8")
 
-                yield self.create_variable_message("result", {
+                yield from result_messages(self, {
                     "key": record_key,
                     "value": record_value,
                     "contentType": content_type,
@@ -118,7 +119,7 @@ class GetKeyValueStoreRecord(Tool):
                     meta=blob_meta
                 )
 
-                yield self.create_variable_message("result", {
+                yield from result_messages(self, {
                     "key": record_key,
                     "fileName": file_name,
                     "contentType": content_type,
@@ -131,7 +132,7 @@ class GetKeyValueStoreRecord(Tool):
             if isinstance(record_value, bytes):
                 record_value = record_value.decode("utf-8")
 
-            yield self.create_variable_message("result", {
+            yield from result_messages(self, {
                 "key": record_key,
                 "value": record_value,
                 "contentType": content_type,
