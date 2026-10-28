@@ -9,9 +9,10 @@ description:
   llm: |
     This tool fetches a single web page, PDF, or other file using the Web Fetch Actor and returns its content
     in one call, with anti-bot handling included. It requires a `url`. Use `formats` to choose which content
-    representations to return (default `markdown`, best for reading and summarizing), and `headers` to send custom
-    HTTP headers to the target site. The result contains the requested URL, `fetch` details (including the target's
-    `httpStatusCode`), page `metadata` (title, description, language, and more), and one key per requested format.
+    representations to return (omit it to let Web Fetch choose by content type: markdown for HTML and PDF, text for
+    textual data, and raw for binary files such as images), and `headers` to send custom HTTP headers to the target
+    site. The result contains the requested URL, `fetch` details (including the target's `httpStatusCode`), page
+    `metadata` (title, description, language, and more), and one key per requested format.
     Always check `fetch.httpStatusCode`, because an error page such as a 404 is still returned successfully.
     A requested format that does not apply to the content type (e.g. `html` for a JSON file) is returned as null;
     the call fails only if none of them apply.
@@ -31,7 +32,6 @@ parameters:
     type: string
     required: false
     form: llm
-    default: markdown
     label:
       en_US: Formats
     human_description:
@@ -44,8 +44,8 @@ parameters:
       text (plain text with no formatting), html (the page HTML, for programmatic processing), links (deduplicated
       absolute URLs found on the page, useful for deciding what to fetch next), raw (the original response body,
       base64-encoded for binary content such as images). Request only what you need, e.g. "markdown" or
-      "markdown,links". Defaults to "markdown". An empty value lets Web Fetch choose by content type: markdown for
-      HTML and PDF, text for textual data, and raw for binary files such as images.
+      "markdown,links". Omit it to let Web Fetch choose by content type: markdown for HTML and PDF, text for textual
+      data, and raw for binary files such as images.
   - name: headers
     type: string
     required: false
