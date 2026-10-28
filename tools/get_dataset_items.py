@@ -13,6 +13,7 @@ from utils.error_handling import (
     require_param,
     validate_number,
 )
+from utils.messages import result_messages
 
 
 class GetDatasetItems(Tool):
@@ -46,7 +47,7 @@ class GetDatasetItems(Tool):
             filtered_options = {k: v for k, v in list_options.items() if v is not None}
             dataset_items_list = dataset_client.list_items(**filtered_options).items
 
-            yield self.create_variable_message("result", {
+            yield from result_messages(self, {
                 "items": dataset_items_list,
                 "count": len(dataset_items_list),
                 "datasetId": dataset_id,

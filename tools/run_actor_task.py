@@ -16,6 +16,7 @@ from utils.error_handling import (
     require_param,
     validate_number,
 )
+from utils.messages import result_messages
 
 
 class RunTask(Tool):
@@ -65,7 +66,7 @@ class RunTask(Tool):
                     "Check the run status in the Apify Console."
                 )
 
-            yield self.create_variable_message("result", run_to_dict(run_details))
+            yield from result_messages(self, run_to_dict(run_details))
 
         except PASSTHROUGH_ERRORS:
             raise

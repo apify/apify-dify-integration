@@ -16,6 +16,7 @@ from utils.error_handling import (
     require_param,
     validate_number,
 )
+from utils.messages import result_messages
 
 
 def get_prefilled_input(actor_client: Any) -> dict[str, Any]:
@@ -117,7 +118,7 @@ class RunActor(Tool):
                     "Check the run status in the Apify Console."
                 )
 
-            yield self.create_variable_message("result", run_to_dict(run_details))
+            yield from result_messages(self, run_to_dict(run_details))
 
         except PASSTHROUGH_ERRORS:
             raise
