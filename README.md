@@ -60,9 +60,13 @@ Start any Actor with a custom JSON input. Choose synchronous execution (wait for
 
 Execute preconfigured Actor tasks with predefined inputs, schedules, and settings. Ideal for recurring workflows where the same Actor runs with the same parameters.
 
-## Scrape a single URL
+## Web Fetch
 
-Quickly extract content from a single web page without configuring a full crawl. Perfect for on-the-fly data retrieval inside chatflows and agents.
+Fetch a single URL and get its content as markdown, HTML, text, links, or raw, in exactly the formats you request, from a single API call. Anti-bot handling is included, and you can send optional custom headers to the target site. Use it for on-the-fly data retrieval in chatflows and agents.
+
+## Scrape a single URL (deprecated)
+
+Quick scraping of a single URL with the Website Content Crawler Actor. This tool is deprecated and will be removed in a future release. Use **Web Fetch** instead.
 
 ## Get dataset items
 

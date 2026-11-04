@@ -76,7 +76,7 @@ Before pushing, run:
 
 ```bash
 flake8 .
-dify plugin package .
+dify plugin package . -o apify.difypkg
 ```
 
 ## Debugging & Development
@@ -112,7 +112,7 @@ Then in your local Dify plugins page, upload the `apify.difypkg` local package f
 
 ## Contribution guidelines
 
-Use feature branches and open a Pull Request to `main`. Before submitting, run `flake8 .` and `dify plugin package .` (CI runs these on PRs as well). Follow conventional commits (`feat:`, `fix:`, `ci:`, `docs:`, etc.) and keep `tools/*.yaml` in sync with `tools/*.py`. Update `manifest.yaml` when adding new tools or endpoints.
+Use feature branches and open a Pull Request to `main`. Before submitting, run `flake8 .` and `dify plugin package . -o apify.difypkg` (CI runs these on PRs as well). Follow conventional commits (`feat:`, `fix:`, `ci:`, `docs:`, etc.) and keep `tools/*.yaml` in sync with `tools/*.py`. Update `manifest.yaml` when adding new tools or endpoints.
 
 ## Publishing a New Version to the Dify Marketplace
 

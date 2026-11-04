@@ -107,16 +107,28 @@ _STATUS_HINTS = {
 }
 
 
-def raise_apify_error(action: str, exc: ApifyApiError) -> None:
-    detail = exc.message or str(exc)
-    status_code = getattr(exc, "status_code", None)
+def _apify_error_message(action: str, detail: str, status_code: int | None) -> str:
     hint = _STATUS_HINTS.get(status_code)
     if hint is None and status_code is not None and status_code >= 500:
         hint = "Apify is experiencing a server error - please retry later"
     message = f"Apify API error while {action}: {detail}"
     if hint:
         message += f" ({hint})"
-    raise ToolInvokeError(message) from exc
+    return message
+
+
+def raise_apify_error(action: str, exc: ApifyApiError) -> None:
+    detail = exc.message or str(exc)
+    raise ToolInvokeError(_apify_error_message(action, detail, getattr(exc, "status_code", None))) from exc
+
+
+def raise_apify_response_error(action: str, detail: str, status_code: int | None = None) -> None:
+    """
+    Same message format as `raise_apify_error`, for Apify error responses received outside of
+    ApifyClient (e.g. from an Actor's Standby endpoint). Pass `status_code` only when the status
+    hints apply, i.e. the error comes from the Apify platform itself.
+    """
+    raise ToolInvokeError(_apify_error_message(action, detail, status_code))
 
 
 def raise_unexpected_error(action: str, exc: Exception) -> None:
