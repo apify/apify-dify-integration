@@ -196,7 +196,7 @@ class WebFetch(Tool):
         except requests.Timeout as e:
             raise ToolInvokeError(
                 f"Fetching {url} took more than {TOTAL_TIMEOUT_SECS} seconds. "
-                "The website may be slow or too large. Try again, or use a different URL."
+                "The website may be slow, too large, or unreachable. Try again, or use a different URL."
             ) from e
         except Exception as e:
             raise_unexpected_error(ACTION, e)
