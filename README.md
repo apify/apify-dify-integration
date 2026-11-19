@@ -103,7 +103,7 @@ Connect with an API key or OAuth:
 **API key:**
 
 1. Open the plugin and select **Add API key**.
-2. Paste the Apify API token from [Apify Console → Integrations](https://console.apify.com/settings/integrations?utm_source=dify&utm_medium=integrations).
+2. Create an API token for Dify in [Apify Console](https://console.apify.com/settings/integrations?createApiToken=true&for=Dify&utm_source=dify&utm_medium=integrations) and copy it right after creating it. It is shown only once. Paste it into the plugin.
 3. Select **Save**. A green indicator confirms the connection.
 
 **OAuth:**
